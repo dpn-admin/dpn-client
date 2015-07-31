@@ -5,7 +5,7 @@ require 'dpn/client/version'
 
 Gem::Specification.new do |spec|
   spec.name          = "dpn-client"
-  spec.version       = Dpn::Client::VERSION
+  spec.version       = DPN::Client::VERSION
   spec.authors       = ["Bryan Hockey"]
   spec.email         = ["bhock@umich.edu"]
 
@@ -25,6 +25,8 @@ Gem::Specification.new do |spec|
   spec.bindir        = "exe"
   spec.executables   = spec.files.grep(%r{^exe/}) { |f| File.basename(f) }
   spec.require_paths = ["lib"]
+
+  spec.add_dependency "httpclient"
 
   spec.add_development_dependency "bundler", "~> 1.10"
   spec.add_development_dependency "rake", "~> 10.0"

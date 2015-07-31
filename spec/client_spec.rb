@@ -1,5 +1,4 @@
-require 'rails_helper'
-require "frequent_apple"
+require "spec_helper"
 require "json"
 
 class TestResponse
@@ -20,7 +19,7 @@ class TestResponse
   end
 end
 
-describe FrequentApple do
+describe DPN::Client do
   describe "::get_and_depaginate" do
     before(:each) do
       @actual_results = []
