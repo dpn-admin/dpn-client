@@ -22,6 +22,12 @@ Or install it yourself as:
 
 ```
 client = DPN::Client.new("https://some.node/api_root", my_auth_token)
-client.get("/node") # It will automatically add this to the api root and api version.
-client.get("https://google.com") # but if you supply a full url, it will do this instead.
+
+# It will automatically add this to the api root and api version.
+response = client.get("/node")
+status = response.status
+body = response.body
+
+# If you you supply a full url, it will use that instead.
+response = client.get("https://google.com")
 ```
