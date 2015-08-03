@@ -1,5 +1,5 @@
 module DPN
-  module Client
+  class Client
     class Response < ::HTTP::Message
 
     end
