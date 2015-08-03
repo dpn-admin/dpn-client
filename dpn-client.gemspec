@@ -12,7 +12,7 @@ Gem::Specification.new do |spec|
   spec.summary       = %q{A client to process the DPN api.}
   spec.description   = %q{A client to process the DPN api.}
   spec.homepage      = "https://github.com/dpn-admin/dpn-client"
-  
+
   spec.files         = `git ls-files -z`.split("\x0").reject { |f| f.match(%r{^(test|spec|features)/}) }
   spec.bindir        = "exe"
   spec.executables   = spec.files.grep(%r{^exe/}) { |f| File.basename(f) }
