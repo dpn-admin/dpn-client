@@ -1,3 +1,5 @@
+require "httpclient"
+
 module DPN
 
   class Client
@@ -15,8 +17,8 @@ module DPN
           "Content-Type" => "application/json",
           "Authorization" => "Token #{auth_cred}"
       }
-      @client = HTTPClient.new( agent_name: DPN::Client.name,  # the module's name
-                                base_url: File.join(api_root, DPN::Client.api_version),
+      @client = ::HTTPClient.new( agent_name: DPN::Client.name,  # the module's name
+                                base_url: File.join(api_root, "api-v#{DPN::Client.api_version}"),
                                 default_header: base_header,
                                 force_basic_auth: true)
     end
