@@ -1,4 +1,10 @@
 # coding: utf-8
+
+# Copyright (c) 2015 The Regents of the University of Michigan.
+# All Rights Reserved.
+# Licensed according to the terms of the Revised BSD License
+# See LICENSE.md for details.
+
 lib = File.expand_path('../lib', __FILE__)
 $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
 require 'dpn/client/version'

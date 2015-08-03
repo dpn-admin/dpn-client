@@ -31,3 +31,11 @@ body = response.body
 # If you you supply a full url, it will use that instead.
 response = client.get("https://google.com")
 ```
+
+## License
+
+Copyright (c) 2015 The Regents of the University of Michigan.
+All Rights Reserved.
+Licensed according to the terms of the Revised BSD License
+See LICENSE.md for details.
+
