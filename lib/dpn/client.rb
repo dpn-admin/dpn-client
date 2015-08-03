@@ -2,11 +2,15 @@ module DPN
 
   class Client
 
+    # Get the api version, based on the major version of this library.
     def self.api_version
       DPN::Client::VERSION.split(".")[0]
     end
 
+
     def initialize(api_root, auth_cred)
+      raise ArgumentError, "Missing api_root" unless api_root
+      raise ArgumentError, "Missing auth_cred" unless auth_cred
       base_header = {
           "Content-Type" => "application/json",
           "Authorization" => "Token #{auth_cred}"
@@ -18,16 +22,27 @@ module DPN
     end
 
 
+    # Issue a GET.
+    # @param url [String]
+    # @return [Response]
     def get(url)
       @client.get(fix_url(url), follow_redirect: true)
     end
 
 
+    # Issue a POST.
+    # @param url [String]
+    # @param body [String]
+    # @return [Response]
     def post(url, body)
       @client.post(fix_url(url), body, follow_redirect: true)
     end
 
 
+    # Issue a PUT.
+    # @param url [String]
+    # @param body [String]
+    # @return [Response]
     def put(url, body)
       # By default, HTTPClient doesn't let us tell it to
       # follow redirects for puts.  The following is a hack
@@ -43,6 +58,9 @@ module DPN
     end
 
 
+    # Issue a DELETE.
+    # @param url [String]
+    # @return [Response]
     def delete(url)
       # Same issue as put.
       args = {
@@ -75,7 +93,8 @@ module DPN
 
 
     # Construct an array that is not paged.  Uses a minimal set
-    # of GET requests.
+    # of GET requests.  If a block is supplied, it will be passed
+    # the results array of each page.
     # @param client [HTTPClient] The active HTTPClient client
     # @param url [String] The complete url to GET.
     # @param page_size [Fixnum] Size of pages to request.
@@ -98,14 +117,14 @@ module DPN
 
 
     private
+    # Ensures that all addresses have a trailing slash.
     def fix_url(url)
       array_url = url.split("?", 2)
       array_url[0] = File.join(array_url[0], "/")
       return array_url.join("?")
     end
 
-    # Construct an array that is not paged.  Uses a minimal set
-    # of GET requests.
+
     # @param client [HTTPClient] The active HTTPClient client
     # @param page_url [String] The complete url to GET.
     # @yield [results] A block to process the results on a page.
@@ -121,6 +140,4 @@ module DPN
       end
     end
   end
-
-
 end
