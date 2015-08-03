@@ -1,8 +1,5 @@
-# Dpn::Client
+# DPN::Client
 
-Welcome to your new gem! In this directory, you'll find the files you need to be able to package up your Ruby library into a gem. Put your Ruby code in the file `lib/dpn/client`. To experiment with that code, run `bin/console` for an interactive prompt.
-
-TODO: Delete this and the text above, and describe your gem
 
 ## Installation
 
@@ -14,7 +11,7 @@ gem 'dpn-client'
 
 And then execute:
 
-    $ bundle
+    $ bundle install
 
 Or install it yourself as:
 
@@ -22,7 +19,11 @@ Or install it yourself as:
 
 ## Usage
 
-TODO: Write usage instructions here
+```
+client = DPN::Client.new("https://some.node/api_root", my_auth_token)
+client.get("/node") # It will automatically add this to the api root and api version.
+client.get("https://google.com") # but if you supply a full url, it will do this instead.
+```
 
 ## Development
 
