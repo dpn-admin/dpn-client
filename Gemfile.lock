@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    dpn-client (1.0.0)
+    dpn-client (2.0.0)
       httpclient
 
 GEM
@@ -23,6 +23,7 @@ GEM
       diff-lcs (>= 1.2.0, < 2.0)
       rspec-support (~> 3.3.0)
     rspec-support (3.3.0)
+    yard (0.8.7.6)
 
 PLATFORMS
   ruby
@@ -32,6 +33,7 @@ DEPENDENCIES
   dpn-client!
   rake (~> 10.0)
   rspec
+  yard
 
 BUNDLED WITH
-   1.10.3
+   1.10.6
