@@ -3,7 +3,7 @@
 # Licensed according to the terms of the Revised BSD License
 # See LICENSE.md for details.
 
-require "dpn/client/client"
+require "dpn/client/agent"
 
 module DPN
   module Client
@@ -15,8 +15,9 @@ module DPN
 
 
     def client(*options)
-      return ::DPN::Client::Client.new options
+      return ::DPN::Client::Agent.new options
     end
+    alias agent client
 
 
   end
