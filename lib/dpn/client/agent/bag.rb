@@ -24,7 +24,7 @@ module DPN
         def bags(options = {page_size: 25}, &block)
           paginate "/bag/", options, &block
         end
-        alias index bags
+        alias_method :index, :bags
 
 
         # @overload bag(uuid, &block)

@@ -27,7 +27,7 @@ module DPN
         def replications(options = {page_size: 25}, &block)
           paginate "/replicate/", options, &block
         end
-        alias index replications
+        alias_method :index, :replications
 
 
         # @overload replicate(replication_id, &block)
