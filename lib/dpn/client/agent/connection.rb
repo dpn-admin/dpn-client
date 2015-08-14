@@ -4,6 +4,7 @@
 # See LICENSE.md for details.
 
 require "uri"
+require "json"
 require "httpclient"
 
 module DPN
@@ -48,7 +49,7 @@ module DPN
           query ||= {}
           options = {
               query: query.merge(extra_query),
-              body: body,
+              body: body.to_json,
               follow_redirect: true
           }
 
