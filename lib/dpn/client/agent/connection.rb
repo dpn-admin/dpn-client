@@ -12,7 +12,7 @@ module DPN
     class Agent
       module Connection
 
-        def get(url, query, &block)
+        def get(url, query = nil, &block)
           request :get, url, query, nil, &block
         end
 
@@ -85,6 +85,11 @@ module DPN
               },
               force_basic_auth: true
           })
+        end
+
+
+        def fix_url(url)
+          File.join url, "/"
         end
 
       end
