@@ -12,7 +12,7 @@ module DPN
 
 
       def initialize(httpclient_message_response)
-        @cached_json = httpclient_message_response.body.content
+        @cached_json = httpclient_message_response.body
         @body = JSON.parse(@cached_json, symbolize_names: true)
         @status = httpclient_message_response.header.status_code
       end
@@ -28,27 +28,33 @@ module DPN
 
 
       def ok?
-        [ 200, 201, 202, 203, 204, 205, 206].include?(@status)
+        [ 200, 201, 202, 203, 204, 205, 206, 207, 208, 226].include?(@status)
       end
       alias_method :success?, :ok?
+
+
+      def keys
+        @body.keys
+      end
 
 
       def [](key)
         @body[key.to_sym]
       end
 
+      # Removing the assignment operations pending a use case v2.0.0
 
-      def []=(key, value)
-        @cached_json = nil
-        @body[key.to_sym] = value
-      end
+      # def []=(key, value)
+      #   @cached_json = nil
+      #   @body[key.to_sym] = value
+      # end
 
 
-      def body=(value)
-        raise ArgumentError unless value.class == Hash
-        @cached_json = nil
-        @body = value
-      end
+      # def body=(value)
+      #   raise ArgumentError unless value.class == Hash
+      #   @cached_json = nil
+      #   @body = value
+      # end
 
 
     end

@@ -1,0 +1,82 @@
+--- !ruby/object:HTTP::Message
+http_header: !ruby/object:HTTP::Message::Headers
+  http_version: '1.1'
+  body_size: 0
+  chunked: false
+  request_method: GET
+  request_uri: !ruby/object:HTTPClient::Util::AddressableURI
+    validation_deferred: false
+    scheme: https
+    normalized_scheme: 
+    uri_string: https://api.test.dpn-client.org
+    hash: 
+    host: api.test.dpn-client.org
+    authority: api.test.dpn-client.org
+    normalized_host: 
+    path: ''
+    normalized_path: 
+  request_query: 
+  request_absolute_uri: 
+  status_code: 200
+  reason_phrase: OK
+  body_type: 
+  body_charset: 
+  body_date: 
+  body_encoding: !ruby/encoding UTF-8
+  is_request: false
+  header_item:
+  - - Server
+    - test.dpn-client.org
+  - - Date
+    - Wed, 19 Aug 2015 19:54:55 GMT
+  - - Content-Type
+    - application/json; charset=utf-8
+  - - Content-Length
+    - '1886'
+  - - Status
+    - 200 OK
+  - - X-RateLimit-Limit
+    - '60'
+  - - X-RateLimit-Remaining
+    - '59'
+  - - X-RateLimit-Reset
+    - '1440017695'
+  - - Cache-Control
+    - public, max-age=60, s-maxage=60
+  - - ETag
+    - '"a5c656a9399ccd6b44e2f9a4291c8289"'
+  - - Vary
+    - Accept
+  - - X-GitHub-Media-Type
+    - github.v3
+  - - X-XSS-Protection
+    - 1; mode=block
+  - - X-Frame-Options
+    - deny
+  - - Content-Security-Policy
+    - default-src 'none'
+  - - Access-Control-Allow-Credentials
+    - 'true'
+  - - Access-Control-Expose-Headers
+    - ETag, Link, X-GitHub-OTP, X-RateLimit-Limit, X-RateLimit-Remaining, X-RateLimit-Reset,
+      X-OAuth-Scopes, X-Accepted-OAuth-Scopes, X-Poll-Interval
+  - - Access-Control-Allow-Origin
+    - "*"
+  - - X-GitHub-Request-Id
+    - 8DD32BB3:7C79:7D80F6C:55D4DF0F
+  - - Strict-Transport-Security
+    - max-age=31536000; includeSubdomains; preload
+  - - X-Content-Type-Options
+    - nosniff
+  - - Vary
+    - Accept-Encoding
+  - - X-Served-By
+    - 5aeb3f30c9e3ef6ef7bcbcddfd9a68f7
+  dumped: false
+peer_cert: !ruby/object:OpenSSL::X509::Certificate {}
+http_body: !ruby/object:HTTP::Message::Body
+  body: '{"first_key":"first_value","second_key":"second_value"}'
+  size: 0
+  positions: 
+  chunk_size: 
+previous: 
