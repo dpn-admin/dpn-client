@@ -25,7 +25,7 @@ module DPN
 
         # Apply the options hash to the configuration
         def configure(options_hash)
-          Configuration.keys.each do |key|
+          keys.each do |key|
             instance_variable_set(:"@#{key}", options_hash[key])
           end
           if block_given?
@@ -36,12 +36,12 @@ module DPN
 
         # Reset to default values
         def reset
-          Configuration.keys.each do |key|
-            instance_variable_set(:"@#{key}", Configuration.defaults[key])
+          keys.each do |key|
+            instance_variable_set(:"@#{key}", defaults[key])
             self
           end
         end
-        alias setup reset
+        alias_method  :setup, :reset
 
         def base_url
           File.join(@api_root, "api-v#{DPN::Client.api_version}")
