@@ -5,7 +5,7 @@
 
 module DPN
   module Client
-    module Agent
+    class Agent
 
       # Operations on the node resource.
       module Node

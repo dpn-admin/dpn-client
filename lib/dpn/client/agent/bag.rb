@@ -5,7 +5,7 @@
 
 module DPN
   module Client
-    module Agent
+    class Agent
       module Bag
 
         # Get the bags index

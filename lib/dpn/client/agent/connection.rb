@@ -9,7 +9,7 @@ require "httpclient"
 
 module DPN
   module Client
-    module Agent
+    class Agent
       module Connection
 
         def get(url, query, &block)

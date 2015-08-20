@@ -4,6 +4,8 @@
 # See LICENSE.md for details.
 
 require "dpn/client/agent"
+require "dpn/client/response"
+require "dpn/client/version"
 
 module DPN
   module Client

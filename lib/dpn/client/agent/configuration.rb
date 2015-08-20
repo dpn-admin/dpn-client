@@ -5,7 +5,7 @@
 
 module DPN
   module Client
-    module Agent
+    class Agent
       module Configuration
         @@keys = [
             :api_root, :auth_token,

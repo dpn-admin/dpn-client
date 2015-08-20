@@ -4,7 +4,7 @@
 # See LICENSE.md for details.
 
 module DPN
-  class Client
+  module Client
     VERSION = "2.0.0"
   end
 end
