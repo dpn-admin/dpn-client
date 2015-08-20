@@ -4,7 +4,6 @@
 # See LICENSE.md for details.
 
 require "spec_helper"
-require "httpclient"
 require "yaml"
 
 WebMock.disable!
