@@ -7,6 +7,9 @@ PATH
 GEM
   remote: https://rubygems.org/
   specs:
+    addressable (2.3.8)
+    crack (0.4.2)
+      safe_yaml (~> 1.0.0)
     diff-lcs (1.2.5)
     httpclient (2.6.0.1)
     rake (10.4.2)
@@ -23,6 +26,10 @@ GEM
       diff-lcs (>= 1.2.0, < 2.0)
       rspec-support (~> 3.3.0)
     rspec-support (3.3.0)
+    safe_yaml (1.0.4)
+    webmock (1.21.0)
+      addressable (>= 2.3.6)
+      crack (>= 0.3.2)
     yard (0.8.7.6)
 
 PLATFORMS
@@ -33,6 +40,7 @@ DEPENDENCIES
   dpn-client!
   rake (~> 10.0)
   rspec
+  webmock
   yard
 
 BUNDLED WITH
