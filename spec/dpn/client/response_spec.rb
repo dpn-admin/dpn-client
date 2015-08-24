@@ -6,13 +6,12 @@
 require "spec_helper"
 require "yaml"
 
-WebMock.disable!
-
 RESPONSE_FILE = "spec/dpn/client/response_file.yml"
 httpclient_resp = YAML::load(File.read(RESPONSE_FILE))
 
 
 describe DPN::Client::Response do
+  before(:all) { WebMock.disable! }
   let(:response) { DPN::Client::Response.new(httpclient_resp) }
   let(:json) { httpclient_resp.body }
 
