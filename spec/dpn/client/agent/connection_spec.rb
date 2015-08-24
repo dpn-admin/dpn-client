@@ -5,11 +5,10 @@
 
 require "spec_helper"
 
-WebMock.enable!
-
 API_ROOT = "https://api.test.dpn-client.org/"
 
 describe DPN::Client::Agent::Connection do
+  before(:all) { WebMock.enable! }
   let(:connection) { DPN::Client::Agent.new(api_root: API_ROOT, auth_token: "some_auth_token") }
 
   describe "#get" do
@@ -38,10 +37,12 @@ describe DPN::Client::Agent::Connection do
     end
 
     it "handles query parameters" do
-      query = { a: [1,2,3], b: "foo" }
-      #@request.with(query: query )
-      connection.get(url, query )
-      expect(WebMock).to have_requested(:get, File.join(API_ROOT, "?a=1,2,3&b=foo"))
+      real_query = "a=1,2,3&b=foo"
+      @request.with(query: real_query)
+
+      connection.get(url, { a: [1,2,3], b: "foo" } )
+
+      expect(@request).to have_been_requested
     end
   end
 
