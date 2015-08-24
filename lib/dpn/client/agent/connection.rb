@@ -6,6 +6,7 @@
 require "uri"
 require "json"
 require "httpclient"
+require "csv" # stringify_nested_arrays!
 
 module DPN
   module Client
@@ -48,7 +49,7 @@ module DPN
           url, extra_query = parse_url(url)
           query ||= {}
           options = {
-              query: query.merge(extra_query),
+              query: stringify_nested_arrays!(query.merge(extra_query)),
               body: body.to_json,
               follow_redirect: true
           }
@@ -90,6 +91,20 @@ module DPN
 
         def fix_url(url)
           File.join url, "/"
+        end
+
+
+        # Convert array values to csv
+        # Only goes one level deep.
+        # @param [Hash] hash
+        # @return [Hash]
+        def stringify_nested_arrays!(hash)
+          hash.keys.each do |key|
+            if hash[key].kind_of?(Array)
+              hash[key] = hash[key].to_csv.strip
+            end
+          end
+          return hash
         end
 
       end
