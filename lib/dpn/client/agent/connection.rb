@@ -64,26 +64,15 @@ module DPN
         # @param query [Hash] Optional query parameters.
         # @param page_size [Fixnum] The number of results to request
         #   from each page.
-        # @yield [Response] Optional block that takes the
+        # @yield [Response] Mandatory block that takes the
         #   response object as a parameter.  The results will
         #   be available via response[:results].
-        # @return [Array<Hash>] An array of the full results.
-        #   This is only returned if no block is passed.
         def paginate(url, query, page_size, &block)
+          raise ArgumentError, "Must pass a block" unless block_given?
+
           query ||= {}
           query = query.merge({ :page_size => page_size, :page => 1})
-          if block_given?
-            output = perform_paginate(url, query) { |response| block.call(response) }
-          else
-            output = perform_paginate(url, query) { |response| default_pagination_block.call(response) }
-          end
-          return output
-        end
 
-
-        protected
-
-        def perform_paginate(url, query)
           response = get(url, query) # pass an empty block so we can call the block manually on :results
           if response.success?
             yield response
@@ -96,15 +85,7 @@ module DPN
         end
 
 
-        # Default pagination block, used to aggregate the results.
-        def default_pagination_block
-          @default_pagination_block ||= Proc.new { |response|
-            all_results ||= []
-            all_results << (response[:results] || [])
-            all_results # return line
-          }
-        end
-
+        protected
 
         def request(method, url, query, body, &block)
           url, extra_query = parse_url(url)
