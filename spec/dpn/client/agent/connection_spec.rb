@@ -117,7 +117,7 @@ describe DPN::Client::Agent::Connection do
       it "passes the results array to the passed block" do
         expect{ |probe|
           connection.paginate(url, {}, 25, &probe)
-        }.to yield_with_args( [{foo: "bar"}] )
+        }.to yield_with_args( DPN::Client::Response )
       end
 
     end # context "with only one page"

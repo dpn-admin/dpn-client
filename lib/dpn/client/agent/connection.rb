@@ -7,35 +7,75 @@ require "uri"
 require "json"
 require "httpclient"
 require "csv" # stringify_nested_arrays!
+require "dpn/client/response"
 
 module DPN
   module Client
     class Agent
       module Connection
 
+        # Make a GET request
+        # @param url [String] The path, relative to base_url
+        # @param query [Hash] Optional query parameters.
+        # @yield [Response] Optional block that takes the
+        #   response object as a parameter.
+        # @return [Response]
         def get(url, query = nil, &block)
           request :get, url, query, nil, &block
         end
 
-        def post(url, body, &block)
+
+        # Make a POST request
+        # @param url [String] The path, relative to base_url
+        # @param body [String] The message body.
+        # @yield [Response] Optional block that takes the
+        #   response object as a parameter.
+        # @return [Response]
+        def post(url, body, &block )
           request :post, url, nil, body, &block
         end
 
+
+        # Make a PUT request
+        # @param url [String] The path, relative to base_url
+        # @param body [String] The message body.
+        # @yield [Response] Optional block that takes the
+        #   response object as a parameter.
+        # @return [Response]
         def put(url, body, &block)
           request :put, url, nil, body, &block
         end
 
+
+        # Make a DELETE request
+        # @param url [String] The path, relative to base_url
+        # @yield [Response] Optional block that takes the
+        #   response object as a parameter.
+        # @return [Response]
         def delete(url, &block)
           request :delete, url, nil, nil, &block
         end
 
+
+        # Make a one or more GET requests, fetching the next
+        # page of results one page at a time, so long as the
+        # response indicates there is another page.
+        # @param url [String] The path, relative to base_url
+        # @param query [Hash] Optional query parameters.
+        # @param page_size [Fixnum] The number of results to request
+        #   from each page.
+        # @yield [Response] Optional block that takes the
+        #   response object as a parameter.  The results will
+        #   be available via response[:results].
+        # @return [Array<Hash>] An array of the full results.
+        #   This is only returned if no block is passed.
         def paginate(url, query, page_size, &block)
           query ||= {}
           query = query.merge({ :page_size => page_size, :page => 1})
           if block_given?
-            output = perform_paginate(url, query) { |results| block.call(results) }
+            output = perform_paginate(url, query) { |response| block.call(response) }
           else
-            output = perform_paginate(url, query) { |results| default_pagination_block.call(results) }
+            output = perform_paginate(url, query) { |response| default_pagination_block.call(response) }
           end
           return output
         end
@@ -45,12 +85,13 @@ module DPN
 
         def perform_paginate(url, query)
           response = get(url, query) # pass an empty block so we can call the block manually on :results
-          yield response[:results] || []
-
-          while response[:next] && response[:results].empty? == false
-            query[:page] += 1
-            response = get(url, query) {}
-            yield response[:results] || []
+          if response.success?
+            yield response
+            while response.success? && response[:next] && response[:results].empty? == false
+              query[:page] += 1
+              response = get(url, query) {}
+              yield response
+            end
           end
         end
 
