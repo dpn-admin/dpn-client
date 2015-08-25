@@ -55,16 +55,17 @@ shared_examples "pagination" do
     end
   end
 
-  it "passes the response to the provided block" do
+  it "calls the provided block" do
     expect{ |probe|
       connection.paginate(url, query, page_size, &probe)
-    }.to yield_with_args( DPN::Client::Response )
+    }.to yield_control
   end
 
-  it "yields the correct thing when it yields" do
+  it "yields the response" do
     counter = 0
     connection.paginate(url, query, page_size) do |response|
       expect(response.body.to_json).to eql(bodies[counter])
+      expect(response.status).to eql(stubs[counter].response.status[0])
       counter += 1
     end
   end
@@ -75,6 +76,12 @@ end
 describe DPN::Client::Agent::Connection do
   before(:all) { WebMock.enable! }
   let(:connection) { DPN::Client::Agent.new(api_root: API_ROOT, auth_token: "some_auth_token") }
+
+  it "isn't allowed unstubbed requests" do
+    expect {
+      connection.get(url)
+    }.to raise_error ::WebMock::NetConnectNotAllowedError
+  end
 
   describe "#get" do
     it_behaves_like "basic http", :get, nil
@@ -104,34 +111,109 @@ describe DPN::Client::Agent::Connection do
 
   describe "#paginate" do
 
+
     it "requires a block" do
       expect {
         connection.paginate(url, {}, 25)
       }.to raise_error(ArgumentError)
     end
 
-    context "with one page" do
-      let!(:query) { {} }
-      let!(:page_size) { 25 }
-      let!(:bodies) {
-        [] << {
-          count: 1,
-          next: nil,
-          previous: nil,
-          results: [
-            { foo: "bar" }
-          ]
-        }.to_json
-      }
-      let!(:headers) { {content_type: "application/json"} }
-      let!(:stubs) {
-        [] << stub_request(:get, url).with(query: {page: 1, page_size: 25})
-                .to_return(body: bodies[0], status: 200, headers: headers)
-      }
+    [{}, { a: "foo", b: "bar" }].each do |query_params| # WebMock breaks if we supply an array here.
+      context "with query==#{query_params}" do          # We don't bother because we tested it in GET
+        context "with one successful page" do
+          let!(:query) { query_params }
+          let!(:page_size) { 25 }
+          let!(:bodies) {
+            [] << {
+              count: 1,
+              next: nil,
+              previous: nil,
+              results: [
+                { foo: "bar" }
+              ]
+            }.to_json
+          }
+          let!(:headers) { {content_type: "application/json"} }
+          let!(:stubs) {
+            [] << stub_request(:get, url).with(query: query.merge({page: 1, page_size: 25}))
+                    .to_return(body: bodies[0], status: 200, headers: headers)
+          }
 
-      it_behaves_like "pagination"
+          it_behaves_like "pagination"
 
-    end # with one page
+        end # with one page
+
+        context "with many successful pages" do
+          let!(:query) { query_params }
+          let!(:page_size) { 1 }
+          let!(:bodies) {[
+            {count: 3, next: "next", previous: nil, results: [{ a: "a1" }]}.to_json,
+            {count: 3, next: "next", previous: "prev", results: [{ b: "b2" }]}.to_json,
+            {count: 3, next: nil, previous: "prev", results: [{ c: "c3" }]}.to_json
+          ]}
+          let!(:headers) { {content_type: "application/json"} }
+          let!(:stubs) {
+            [
+              stub_request(:get, url).with(query: query.merge({page: 1, page_size: 1}))
+                .to_return(body: bodies[0], status: 200, headers: headers),
+              stub_request(:get, url).with(query: query.merge({page: 2, page_size: 1}))
+                .to_return(body: bodies[1], status: 200, headers: headers),
+              stub_request(:get, url).with(query: query.merge({page: 3, page_size: 1}))
+                .to_return(body: bodies[2], status: 200, headers: headers)
+            ]
+          }
+
+          it_behaves_like "pagination"
+        end
+
+        context "with one failed page" do
+          let!(:query) { query_params }
+          let!(:page_size) { 25 }
+          let!(:bodies) {
+            [] << {
+              count: 1,
+              next: nil,
+              previous: nil,
+              results: [
+                { foo: "bar" }
+              ]
+            }.to_json
+          }
+          let!(:headers) { {content_type: "application/json"} }
+          let!(:stubs) {
+            [] << stub_request(:get, url).with(query: query.merge({page: 1, page_size: 25}))
+                    .to_return(body: bodies[0], status: 400, headers: headers)
+          }
+
+          it_behaves_like "pagination"
+        end
+
+        context "with two successful then one failed pages" do
+          let!(:query) { query_params }
+          let!(:page_size) { 1 }
+          let!(:bodies) {[
+            {count: 3, next: "next", previous: nil, results: [{ a: "a1" }]}.to_json,
+            {count: 3, next: "next", previous: "prev", results: [{ b: "b2" }]}.to_json,
+            {count: 3, next: nil, previous: "prev", results: [{ c: "c3" }]}.to_json
+          ]}
+          let!(:headers) { {content_type: "application/json"} }
+          let!(:stubs) {
+            [
+              stub_request(:get, url).with(query: query.merge({page: 1, page_size: 1}))
+                .to_return(body: bodies[0], status: 200, headers: headers),
+              stub_request(:get, url).with(query: query.merge({page: 2, page_size: 1}))
+                .to_return(body: bodies[1], status: 200, headers: headers),
+              stub_request(:get, url).with(query: query.merge({page: 3, page_size: 1}))
+                .to_return(body: bodies[2], status: 400, headers: headers)
+            ]
+          }
+
+          it_behaves_like "pagination"
+        end
+      end
+    end
+
+
   end
 
 end

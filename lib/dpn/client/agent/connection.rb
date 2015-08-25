@@ -74,13 +74,11 @@ module DPN
           query = query.merge({ :page_size => page_size, :page => 1})
 
           response = get(url, query) # pass an empty block so we can call the block manually on :results
-          if response.success?
+          yield response
+          while response.success? && response[:next] && response[:results].empty? == false
+            query[:page] += 1
+            response = get(url, query) {}
             yield response
-            while response.success? && response[:next] && response[:results].empty? == false
-              query[:page] += 1
-              response = get(url, query) {}
-              yield response
-            end
           end
         end
 
