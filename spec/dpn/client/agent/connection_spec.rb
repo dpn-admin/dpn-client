@@ -210,6 +210,30 @@ describe DPN::Client::Agent::Connection do
 
           it_behaves_like "pagination"
         end
+
+        context "with a response that changes the page size" do
+          let!(:query) { query_params }
+          let!(:page_size) { 25 } # primary change
+          let!(:bodies) {[
+            {count: 3, next: "next", previous: nil, results: [{ a: "a1" }]}.to_json,
+            {count: 3, next: "next", previous: "prev", results: [{ b: "b2" }]}.to_json,
+            {count: 3, next: nil, previous: "prev", results: [{ c: "c3" }]}.to_json
+          ]}
+          let!(:headers) { {content_type: "application/json"} }
+          let!(:stubs) {
+            [
+              stub_request(:get, url).with(query: query.merge({page: 1, page_size: 25}))
+                .to_return(body: bodies[0], status: 200, headers: headers),
+              stub_request(:get, url).with(query: query.merge({page: 2, page_size: 1}))
+                .to_return(body: bodies[1], status: 200, headers: headers),
+              stub_request(:get, url).with(query: query.merge({page: 3, page_size: 1}))
+                .to_return(body: bodies[2], status: 400, headers: headers)
+            ]
+          }
+
+          it_behaves_like "pagination"
+        end
+
       end
     end
 

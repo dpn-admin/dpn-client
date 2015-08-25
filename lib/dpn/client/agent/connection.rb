@@ -77,6 +77,7 @@ module DPN
           yield response
           while response.success? && response[:next] && response[:results].empty? == false
             query[:page] += 1
+            query[:page_size] = response[:results].size # in case the server specifies a different page size
             response = get(url, query) {}
             yield response
           end
