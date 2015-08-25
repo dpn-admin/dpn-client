@@ -52,7 +52,7 @@ module DPN
         # @yield [Response]
         # @return [Response]
         def create_node(node, &block)
-          post "/node/#{node[:namespace]}/", node, &block
+          post "/node/", node, &block
         end
 
 

@@ -8,10 +8,10 @@ require "spec_helper"
 describe DPN::Client::Agent::Node do
   before(:all) { WebMock.enable! }
   let(:agent) { DPN::Client::Agent.new(api_root: test_api_root, auth_token: "some_auth_token") }
+  headers =  {content_type: "application/json"}
+  node_name = "hathi"
 
-
-
-  describe "#nodes" do
+  shared_examples "nodes" do
     let!(:query) { {} }
     let!(:page_size) { 1 }
     let!(:bodies) {[
@@ -19,7 +19,6 @@ describe DPN::Client::Agent::Node do
       {count: 3, next: "next", previous: "prev", results: [{ b: "b2" }]},
       {count: 3, next: nil, previous: "prev", results: [{ c: "c3" }]}
     ]}
-    let!(:headers) { {content_type: "application/json"} }
     let!(:stubs) {
       [
         stub_request(:get, dpn_url("/node/?page=1&page_size=#{page_size}"))
@@ -50,6 +49,56 @@ describe DPN::Client::Agent::Node do
         agent.nodes(page_size: page_size, &probe)
       }.to yield_successive_args( *(results.flatten) ) # asterisk explodes the array
     end
+  end
+
+  describe "#nodes" do
+    it_behaves_like "nodes"
+  end
+
+
+  describe "#node" do
+    context "without a namespace" do
+      it_behaves_like "nodes"
+    end
+    context "with a namespace" do
+      let!(:stub) {
+        stub_request(:get, dpn_url("/node/#{node_name}/"))
+          .to_return(body: {a: :b}.to_json, status: 200, headers: headers)
+      }
+      it_behaves_like "a dpn-client method", :node, node_name
+    end
+  end
+
+
+  describe "create_node" do
+    body = { namespace: node_name, foo: "bar" }
+    let!(:stub) {
+      stub_request(:post, dpn_url("/node/"))
+        .to_return(body: body.to_json, status: 201, headers: headers)
+    }
+
+    it_behaves_like "a dpn-client method", :create_node, body
+  end
+
+
+  describe "update_node" do
+    body = { namespace: node_name, foo: "bar" }
+    let!(:stub) {
+      stub_request(:put, dpn_url("/node/#{node_name}/"))
+        .to_return(body: body.to_json, status: 200, headers: headers)
+    }
+
+    it_behaves_like "a dpn-client method", :update_node, body
+  end
+
+
+  describe "delete_node" do
+    let!(:stub) {
+      stub_request(:delete, dpn_url("/node/#{node_name}/"))
+        .to_return(body: {}.to_json, status: 200, headers: headers)
+    }
+
+    it_behaves_like "a dpn-client method", :delete_node, node_name
   end
 
 
