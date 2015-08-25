@@ -14,3 +14,18 @@ require 'httpclient'
 require 'webmock/rspec'
 WebMock.disable_net_connect!(allow_localhost: false)
 WebMock.disable!
+
+def test_api_root
+  "https://test.client.dpn.org"
+end
+
+def dpn_url(url)
+  url, query = url.split("?")
+  api_string = "api-v#{DPN::Client::api_version}"
+  if query
+    File.join test_api_root, api_string, url, "/?#{query}"
+  else
+    File.join test_api_root, api_string, url, "/"
+  end
+
+end
