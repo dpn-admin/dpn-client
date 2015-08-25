@@ -89,7 +89,7 @@ describe DPN::Client::Agent::Connection do
       }
 
       before(:each) do
-        @stub = stub_request(:get, url).with(query: "page=1&page_size=25")
+        @stub = stub_request(:get, url).with(query: {page: 1, page_size: 25})
                  .to_return(body: body, status: 200, headers: headers)
       end
 
@@ -98,13 +98,23 @@ describe DPN::Client::Agent::Connection do
         expect(@stub).to have_been_requested
       end
 
+      it "handles query parameters" do
+        real_query = { a: "1,2,3", b: "foo", page: 1, page_size: 25}
+        stub = stub_request(:get, url).with(query: real_query)
+                 .to_return(body: body, status: 200, headers: headers)
+
+        connection.paginate(url, { a: [1,2,3], b: "foo" }, 25 ) {}
+
+        expect(stub).to have_been_requested
+      end
+
       # it "returns the correct response object" do
       #   response = connection.paginate( url, *args)
       #   expect(response).to be_a DPN::Client::Response
       #   expect(response.body).to eql(body)
       # end
 
-      it "executes the passed block on the response's results array" do
+      it "passes the results array to the passed block" do
         expect{ |probe|
           connection.paginate(url, {}, 25, &probe)
         }.to yield_with_args( [{foo: "bar"}] )

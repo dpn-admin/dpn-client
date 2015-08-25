@@ -17,9 +17,8 @@ module DPN
         #   nodes.
         # @return [Array<Hash>]
         def nodes(options = {page_size: 25}, &block)
-          paginate "/node/", options, &block
+          paginate "/node/", options, options[:page_size] || 25, &block
         end
-        alias_method :index, :nodes
 
 
         # @overload node(namespace, &block)
