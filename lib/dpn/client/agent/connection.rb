@@ -30,9 +30,21 @@ module DPN
         end
 
         def paginate(url, query, page_size, &block)
+          query ||= {}
           query = query.merge({ :page_size => page_size, :page => 1})
+          if block_given?
+            output = perform_paginate(url, query) { |results| block.call(results) }
+          else
+            output = perform_paginate(url, query) { |results| default_pagination_block.call(results) }
+          end
+          return output
+        end
 
-          response = get(url, query) {} # pass an empty block so we can call the block manually on :results
+
+        protected
+
+        def perform_paginate(url, query)
+          response = get(url, query) # pass an empty block so we can call the block manually on :results
           yield response[:results] || []
 
           while response[:next] && response[:results].empty? == false
@@ -43,7 +55,15 @@ module DPN
         end
 
 
-        protected
+        # Default pagination block, used to aggregate the results.
+        def default_pagination_block
+          @default_pagination_block ||= Proc.new { |response|
+            all_results ||= []
+            all_results << (response[:results] || [])
+            all_results # return line
+          }
+        end
+
 
         def request(method, url, query, body, &block)
           url, extra_query = parse_url(url)

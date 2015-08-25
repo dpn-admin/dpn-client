@@ -15,7 +15,7 @@ shared_examples "basic http" do |operation, *args|
                    .to_return(body: body.to_json, status: 200, headers: {content_type: "application/json"})
   end
 
-  it "sends the request to #{url}" do
+  it "requests #{url}" do
     connection.public_send(operation, url, *args)
     expect(@request).to have_been_requested
   end
@@ -72,6 +72,45 @@ describe DPN::Client::Agent::Connection do
 
   describe "#delete" do
     it_behaves_like "basic http", :delete
+  end
+
+  describe "#paginate" do
+    context "with only one page" do
+      let(:headers) { {content_type: "application/json"} }
+      let(:body) {
+        {
+          count: 1,
+          next: nil,
+          previous: nil,
+          results: [
+            { foo: "bar" }
+          ]
+        }.to_json
+      }
+
+      before(:each) do
+        @stub = stub_request(:get, url).with(query: "page=1&page_size=25")
+                 .to_return(body: body, status: 200, headers: headers)
+      end
+
+      it "requests #{url}?page=1&page_size=25" do
+        connection.paginate(url, {}, 25) {}
+        expect(@stub).to have_been_requested
+      end
+
+      # it "returns the correct response object" do
+      #   response = connection.paginate( url, *args)
+      #   expect(response).to be_a DPN::Client::Response
+      #   expect(response.body).to eql(body)
+      # end
+
+      it "executes the passed block on the response's results array" do
+        expect{ |probe|
+          connection.paginate(url, {}, 25, &probe)
+        }.to yield_with_args( [{foo: "bar"}] )
+      end
+
+    end # context "with only one page"
   end
 
 
