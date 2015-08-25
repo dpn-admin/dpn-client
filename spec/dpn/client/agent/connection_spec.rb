@@ -44,6 +44,34 @@ shared_examples "basic http" do |operation, *args|
 end
 
 
+shared_examples "pagination" do
+  # query, page_size
+  # stubs, bodies
+
+  it "requests all of the stubs" do
+    connection.paginate(url, query, page_size) {}
+    stubs.each do |stub|
+      expect(stub).to have_been_requested
+    end
+  end
+
+  it "passes the response to the provided block" do
+    expect{ |probe|
+      connection.paginate(url, query, page_size, &probe)
+    }.to yield_with_args( DPN::Client::Response )
+  end
+
+  it "yields the correct thing when it yields" do
+    counter = 0
+    connection.paginate(url, query, page_size) do |response|
+      expect(response.body.to_json).to eql(bodies[counter])
+      counter += 1
+    end
+  end
+
+end
+
+
 describe DPN::Client::Agent::Connection do
   before(:all) { WebMock.enable! }
   let(:connection) { DPN::Client::Agent.new(api_root: API_ROOT, auth_token: "some_auth_token") }
@@ -75,10 +103,18 @@ describe DPN::Client::Agent::Connection do
   end
 
   describe "#paginate" do
-    context "with only one page" do
-      let(:headers) { {content_type: "application/json"} }
-      let(:body) {
-        {
+
+    it "requires a block" do
+      expect {
+        connection.paginate(url, {}, 25)
+      }.to raise_error(ArgumentError)
+    end
+
+    context "with one page" do
+      let!(:query) { {} }
+      let!(:page_size) { 25 }
+      let!(:bodies) {
+        [] << {
           count: 1,
           next: nil,
           previous: nil,
@@ -87,44 +123,15 @@ describe DPN::Client::Agent::Connection do
           ]
         }.to_json
       }
+      let!(:headers) { {content_type: "application/json"} }
+      let!(:stubs) {
+        [] << stub_request(:get, url).with(query: {page: 1, page_size: 25})
+                .to_return(body: bodies[0], status: 200, headers: headers)
+      }
 
-      before(:each) do
-        @stub = stub_request(:get, url).with(query: {page: 1, page_size: 25})
-                 .to_return(body: body, status: 200, headers: headers)
-      end
+      it_behaves_like "pagination"
 
-      it "requests #{url}?page=1&page_size=25" do
-        connection.paginate(url, {}, 25) {}
-        expect(@stub).to have_been_requested
-      end
-
-      it "handles query parameters" do
-        real_query = { a: "1,2,3", b: "foo", page: 1, page_size: 25}
-        stub = stub_request(:get, url).with(query: real_query)
-                 .to_return(body: body, status: 200, headers: headers)
-
-        connection.paginate(url, { a: [1,2,3], b: "foo" }, 25 ) {}
-
-        expect(stub).to have_been_requested
-      end
-
-      # it "returns the correct response object" do
-      #   response = connection.paginate( url, *args)
-      #   expect(response).to be_a DPN::Client::Response
-      #   expect(response.body).to eql(body)
-      # end
-
-      it "passes the results array to the passed block" do
-        expect{ |probe|
-          connection.paginate(url, {}, 25, &probe)
-        }.to yield_with_args( DPN::Client::Response )
-      end
-
-    end # context "with only one page"
+    end # with one page
   end
-
-
-
-
 
 end
