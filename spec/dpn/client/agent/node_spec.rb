@@ -33,7 +33,7 @@ describe DPN::Client::Agent::Node do
     it_behaves_like "a paged endpoint", :nodes, {page_size: page_size}
   end
 
-  describe "#node" do
+  describe "#nodes" do
     it_behaves_like "nodes"
   end
 
