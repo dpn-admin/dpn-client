@@ -22,7 +22,7 @@ Or install it yourself as:
 
 See the yard documentation for more info, but the basics are thus:
 
-```
+```ruby
 client = DPN::Client.client.configure do |c|
   c.api_root = "https://hathitrust.org/api_root"
   c.auth_token = "auth_token_for_hathi"
