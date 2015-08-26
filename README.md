@@ -20,22 +20,31 @@ Or install it yourself as:
 
 ## Usage
 
+See the yard documentation for more info, but the basics are thus:
+
 ```
-client = DPN::Client.new("https://some.node/api_root", my_auth_token)
+client = DPN::Client.client.configure do |c|
+  c.api_root = "https://hathitrust.org/api_root"
+  c.auth_token = "auth_token_for_hathi"
+end
 
-# It will automatically add this to the api root and api version.
-response = client.get("/node")
-status = response.status
-body = response.body
+client.bags(page_size: 25, admin_node: "hathi) do |bag|
+  bag.inspect # this block is optional
+end
 
-# If you you supply a full url, it will use that instead.
-response = client.get("https://google.com")
+resp = client.create_bag(some_bag_hash)
+if resp.success?
+  some_bag_hash[:status] = resp[:status]
+end
 ```
 
 ## License
 
 Copyright (c) 2015 The Regents of the University of Michigan.
+
 All Rights Reserved.
-Licensed according to the terms of the Revised BSD License
+
+Licensed according to the terms of the Revised BSD License.
+
 See LICENSE.md for details.
 
