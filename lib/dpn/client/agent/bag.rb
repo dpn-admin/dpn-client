@@ -16,15 +16,20 @@ module DPN
         # @option options [DateTime String] :after (nil) Include only entries last modified
         #   after this date.
         # @option options [String] :admin_node (nil) Namespace of the admin_node of the bag.
-        # @option options [String] :bag_type (nil) One of D, R, I, for data, rights, and
+        # @option options [String] :bag_type (nil) One of 'D', 'R', 'I', for data, rights, and
         #   interpretive, respectively.
         # @yield [Array<Hash>] Optional block to process each page of
         #   nodes.
         # @return [Array<Hash>]
         def bags(options = {page_size: 25}, &block)
-          paginate "/bag/", options, &block
+          [:after, :before].each do |date_field|
+            if options[date_field].is_a?(DateTime)
+              options[date_field] = options[:date_field].new_offset(0).strftime(DPN::Client.time_format)
+            end
+          end
+
+          return paging_helper "/bag/", options, &block
         end
-        alias_method :index, :bags
 
 
         # @overload bag(uuid, &block)
@@ -50,7 +55,7 @@ module DPN
         # @yield [Response]
         # @return [Response]
         def create_bag(bag, &block)
-          post "/bag/#{bag[:uuid]}/", bag, &block
+          post "/bag", bag, &block
         end
 
 
