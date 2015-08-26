@@ -28,16 +28,8 @@ module DPN
           if options[:after].is_a?(DateTime)
             options[:after] = options[:after].new_offset(0).strftime(DPN::Client.time_format)
           end
-          results = []
-          paginate "/replicate/", options, options[:page_size] || 25 do |response|
-            if response.success?
-              response[:results].each do |result|
-                results << result
-                yield result
-              end
-            end
-          end
-          return results
+
+          return paging_helper "/replicate/", options, &block
         end
 
 

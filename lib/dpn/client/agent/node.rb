@@ -15,17 +15,8 @@ module DPN
         # @option options [Fixnum] :page_size (25) Number of nodes per page
         # @yield [Hash] Optional block to process each node.
         # @return [Array<Hash>]
-        def nodes(options = {page_size: 25})
-          nodes = []
-          paginate "/node/", options, options[:page_size] || 25 do |response|
-            if response.success?
-              response[:results].each do |node|
-                nodes << node
-                yield node
-              end
-            end
-          end
-          return nodes
+        def nodes(options = {page_size: 25}, &block)
+          return paging_helper "/node/", options, &block
         end
 
 
