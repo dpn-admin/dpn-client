@@ -1,7 +1,7 @@
 require "rspec"
 
 
-shared_examples "a dpn-client method" do |method, *args|
+shared_examples "a single endpoint" do |method, *args|
   # expect stub to be defined with let!
 
   it "sends the right request" do

@@ -65,7 +65,7 @@ describe DPN::Client::Agent::Node do
         stub_request(:get, dpn_url("/node/#{node_name}/"))
           .to_return(body: {a: :b}.to_json, status: 200, headers: headers)
       }
-      it_behaves_like "a dpn-client method", :node, node_name
+      it_behaves_like "a single endpoint", :node, node_name
     end
   end
 
@@ -77,7 +77,7 @@ describe DPN::Client::Agent::Node do
         .to_return(body: body.to_json, status: 201, headers: headers)
     }
 
-    it_behaves_like "a dpn-client method", :create_node, body
+    it_behaves_like "a single endpoint", :create_node, body
   end
 
 
@@ -88,7 +88,7 @@ describe DPN::Client::Agent::Node do
         .to_return(body: body.to_json, status: 200, headers: headers)
     }
 
-    it_behaves_like "a dpn-client method", :update_node, body
+    it_behaves_like "a single endpoint", :update_node, body
   end
 
 
@@ -98,7 +98,7 @@ describe DPN::Client::Agent::Node do
         .to_return(body: {}.to_json, status: 200, headers: headers)
     }
 
-    it_behaves_like "a dpn-client method", :delete_node, node_name
+    it_behaves_like "a single endpoint", :delete_node, node_name
   end
 
 
