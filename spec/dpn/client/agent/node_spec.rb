@@ -51,7 +51,7 @@ describe DPN::Client::Agent::Node do
     end
   end
 
-  describe "#nodes" do
+  describe "#node" do
     it_behaves_like "nodes"
   end
 
