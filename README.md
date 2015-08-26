@@ -20,7 +20,9 @@ Or install it yourself as:
 
 ## Usage
 
-See the yard documentation for more info, but the basics are thus:
+See the
+[[yard documentation]](http://www.rubydoc.info/github/dpn-admin/dpn-client/master/DPN/Client/Agent)
+for more info, but the basics are thus:
 
 ```ruby
 client = DPN::Client.client.configure do |c|
@@ -40,11 +42,8 @@ end
 
 ## License
 
-Copyright (c) 2015 The Regents of the University of Michigan.
-
-All Rights Reserved.
-
-Licensed according to the terms of the Revised BSD License.
-
-See LICENSE.md for details.
+Copyright (c) 2015 The Regents of the University of Michigan.  
+All Rights Reserved.  
+Licensed according to the terms of the Revised BSD License.  
+See LICENSE.md for details.  
 
