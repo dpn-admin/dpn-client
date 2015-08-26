@@ -12,8 +12,8 @@ describe DPN::Client::Agent::Node do
   node_name = "hathi"
 
   shared_examples "nodes" do
+    page_size = 1
     let!(:query) { {} }
-    let!(:page_size) { 1 }
     let!(:bodies) {[
       {count: 3, next: "next", previous: nil, results: [{ a: "a1" }]},
       {count: 3, next: "next", previous: "prev", results: [{ b: "b2" }]},
@@ -30,25 +30,7 @@ describe DPN::Client::Agent::Node do
       ]
     }
 
-    it "requests the correct endpoints" do
-      agent.nodes(page_size: page_size) {}
-      stubs.each do |stub|
-        expect(stub).to have_been_requested
-      end
-    end
-
-    it "returns the aggregated nodes" do
-      nodes = agent.nodes(page_size: page_size) {}
-      results = bodies.collect { |body| body[:results]}
-      expect(nodes).to eql(results.flatten)
-    end
-
-    it "executes the block on each node" do
-      results = bodies.collect { |body| body[:results]}
-      expect{ |probe|
-        agent.nodes(page_size: page_size, &probe)
-      }.to yield_successive_args( *(results.flatten) ) # asterisk explodes the array
-    end
+    it_behaves_like "a paged endpoint", :nodes, {page_size: page_size}
   end
 
   describe "#node" do
