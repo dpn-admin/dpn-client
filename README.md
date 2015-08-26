@@ -21,7 +21,7 @@ Or install it yourself as:
 ## Usage
 
 See the
-[[yard documentation]](http://www.rubydoc.info/github/dpn-admin/dpn-client/master/DPN/Client/Agent)
+[yard documentation](http://www.rubydoc.info/github/dpn-admin/dpn-client/master/DPN/Client/Agent)
 for more info, but the basics are thus:
 
 ```ruby
