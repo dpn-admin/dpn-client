@@ -24,9 +24,11 @@ module DPN
 
 
         # Apply the options hash to the configuration
-        def configure(options_hash)
+        def configure(options_hash = {})
           keys.each do |key|
-            instance_variable_set(:"@#{key}", options_hash[key])
+            if options_hash[key]
+              instance_variable_set(:"@#{key}", options_hash[key])
+            end
           end
           if block_given?
             yield self

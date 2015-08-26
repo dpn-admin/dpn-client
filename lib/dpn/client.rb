@@ -21,10 +21,9 @@ module DPN
     end
 
 
-    def client(*options)
+    def self.client(options = {})
       return ::DPN::Client::Agent.new options
     end
-    alias agent client
 
 
   end

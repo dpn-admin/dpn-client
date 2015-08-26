@@ -23,6 +23,7 @@ module DPN
         self.configure(options)
       end
 
+      protected
 
       def paging_helper(endpoint, options)
         results = []
