@@ -11,8 +11,8 @@ module DPN
         # Get the replication request index
         # @param [Hash] options
         # @option options [Fixnum] :page_size (25) Number of entries per page
-        # @option options [DateTime String] :after (nil) Include only entries last modified
-        #   after this date.
+        # @option options [DateTime,String] :after (nil) Include only entries last modified
+        #   after this date.  Takes a properly formatted string, or a datetime.
         # @option options [String] uuid (nil) Filter by a specific bag's UUID.
         # @option options [String] status (nil) Filter by status.
         # @option options [Boolean] fixity_accept (nil) Filter by the value of fixity_accept.
@@ -25,9 +25,11 @@ module DPN
         #   nodes.
         # @return [Array<Hash>]
         def replications(options = {page_size: 25}, &block)
+          if options[:after].is_a?(DateTime)
+            options[:after] = options[:after].utc.strftime(DPN::Client.time_format)
+          end
           paginate "/replicate/", options, &block
         end
-        alias_method :index, :replications
 
 
         # @overload replicate(replication_id, &block)
@@ -53,7 +55,7 @@ module DPN
         # @yield [Response]
         # @return [Response]
         def create_replication(request, &block)
-          post "/replicate/#{request[:replication_id]}/", request, &block
+          post "/replicate", request, &block
         end
 
 
@@ -71,7 +73,7 @@ module DPN
         # @yield [Response]
         # @return [Response]
         def delete_replication(replication_id, &block)
-          delete "/replicate/#{request[:replication_id]}/", &block
+          delete "/replicate/#{replication_id}/", &block
         end
 
       end

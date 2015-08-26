@@ -16,6 +16,11 @@ module DPN
     end
 
 
+    def self.time_format
+      "%Y-%m-%dT%H:%M:%SZ"
+    end
+
+
     def client(*options)
       return ::DPN::Client::Agent.new options
     end
