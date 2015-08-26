@@ -1,6 +1,5 @@
 # DPN::Client
 
-
 ## Installation
 
 Add this line to your application's Gemfile:
@@ -13,10 +12,6 @@ gem 'dpn-client' :git => 'https://github.com/dpn-admin/dpn-client.git'
 And then execute:
 
     $ bundle install
-
-Or install it yourself as:
-
-    $ gem install dpn-client
 
 ## Usage
 
@@ -39,6 +34,14 @@ if resp.success?
   some_bag_hash[:status] = resp[:status]
 end
 ```
+
+Essentially, single-endpoint operations always return a Response object,
+but you can treat this object as just a hash, if you want.  Index operations
+return an array of hashes.
+
+You can pass a block to any operation.  For single-endpoints, the response will
+be passed to the block.  For indexes, each individual result will be passed 
+successively to the block. Using blocks is recommended.
 
 ## License
 
