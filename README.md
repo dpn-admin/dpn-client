@@ -25,7 +25,7 @@ client = DPN::Client.client.configure do |c|
   c.auth_token = "auth_token_for_hathi"
 end
 
-client.bags(page_size: 25, admin_node: "hathi) do |bag|
+client.bags(page_size: 25, admin_node: "hathi") do |bag|
   bag.inspect # this block is optional
 end
 
