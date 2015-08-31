@@ -33,6 +33,7 @@ module DPN
           if block_given?
             yield self
           end
+          return self
         end
 
 
