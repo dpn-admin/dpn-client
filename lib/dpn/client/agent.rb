@@ -23,21 +23,6 @@ module DPN
         self.configure(options)
       end
 
-      protected
-
-      def paging_helper(endpoint, options)
-        results = []
-        paginate endpoint, options, options[:page_size] || 25 do |response|
-          if response.success?
-            response[:results].each do |result|
-              results << result
-              yield result
-            end
-          end
-        end
-        return results
-      end
-
     end
   end
 end

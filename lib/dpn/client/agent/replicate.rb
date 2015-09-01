@@ -21,15 +21,15 @@ module DPN
         # @option options [String] :to_node (nil) Namespace of the to_node of the bag.
         # @option options [String] :order_by (nil) Comma-separated list of strings to order the
         #   result by.  Accepted values are 'created_at' and 'updated_at'
-        # @yield [Array<Hash>] Optional block to process each page of
-        #   nodes.
-        # @return [Array<Hash>]
+        # @yield [Response] Optional block to process each individual replication.
+        # @return [Array<Hash>] Array of all replication data. Generated and returned
+        #   only if no block is passed.
         def replications(options = {page_size: 25}, &block)
           if options[:after].is_a?(DateTime)
             options[:after] = options[:after].new_offset(0).strftime(DPN::Client.time_format)
           end
 
-          return paging_helper "/replicate/", options, &block
+          return paginate_each "/replicate/", options, options[:page_size], &block
         end
 
 

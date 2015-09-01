@@ -18,9 +18,9 @@ module DPN
         # @option options [String] :admin_node (nil) Namespace of the admin_node of the bag.
         # @option options [String] :bag_type (nil) One of 'D', 'R', 'I', for data, rights, and
         #   interpretive, respectively.
-        # @yield [Array<Hash>] Optional block to process each page of
-        #   nodes.
-        # @return [Array<Hash>]
+        # @yield [Response] Optional block to process individual bag.
+        # @return [Array<Hash>] Array of all bag data. Generated and returned
+        #   only if no block is passed.
         def bags(options = {page_size: 25}, &block)
           [:after, :before].each do |date_field|
             if options[date_field].is_a?(DateTime)
@@ -28,7 +28,7 @@ module DPN
             end
           end
 
-          return paging_helper "/bag/", options, &block
+          return paginate_each "/bag/", options, options[:page_size], &block
         end
 
 

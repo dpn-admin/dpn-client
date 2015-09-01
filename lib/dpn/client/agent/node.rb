@@ -13,10 +13,11 @@ module DPN
         # Get the nodes index
         # @param [Hash] options
         # @option options [Fixnum] :page_size (25) Number of nodes per page
-        # @yield [Hash] Optional block to process each node.
-        # @return [Array<Hash>]
+        # @yield [Response] Optional block to process each individual node.
+        # @return [Array<Hash>] Array of all node data. Generated and returned
+        #   only if no block is passed.
         def nodes(options = {page_size: 25}, &block)
-          return paging_helper "/node/", options, &block
+          return paginate_each "/node/", options, options[:page_size], &block
         end
 
 

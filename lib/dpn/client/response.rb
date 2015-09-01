@@ -17,6 +17,13 @@ module DPN
         @status = httpclient_message_response.header.status_code
       end
 
+
+      # Manually create a response.
+      def self.from_data(status, body)
+        @body = body
+        @status = status
+      end
+
       attr_reader :status, :body
 
 

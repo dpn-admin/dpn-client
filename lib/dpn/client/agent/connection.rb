@@ -64,9 +64,9 @@ module DPN
         # @param query [Hash] Optional query parameters.
         # @param page_size [Fixnum] The number of results to request
         #   from each page.
-        # @yield [Response] Mandatory block that takes the
-        #   response object as a parameter.  The results will
-        #   be available via response[:results].
+        # @yield [Response] Mandatory block that takes a page
+        #   of results (the response object) as a parameter.
+        #   The results will be available via response[:results].
         def paginate(url, query, page_size, &block)
           raise ArgumentError, "Must pass a block" unless block_given?
 
@@ -80,6 +80,38 @@ module DPN
             query[:page_size] = response[:results].size # in case the server specifies a different page size
             response = get(url, query) {}
             yield response
+          end
+        end
+
+
+        # Make a one or more GET requests, fetching the next
+        # page of results one page at a time, so long as the
+        # response indicates there is another page.  This method
+        # yields each individual result, wrapped in a [Response].
+        # @param url [String] The path, relative to base_url
+        # @param query [Hash] Optional query parameters.
+        # @param page_size [Fixnum] The number of results to request
+        #   from each page.
+        # @yield [Response] Mandatory block that takes each individual
+        #   result wrapped in a resonse object as a parameter.
+        # @return [Array<Response>] The results iff a block is not passed.
+        def paginate_each(url, query, page_size, &block)
+          results = []
+          paginate(url, query, (page_size || 25)) do |response|
+            if response.success?
+              response[:results].each do |result|
+                if block_given?
+                  individual_response = Response.from_data(response.status, response.body)
+                  yield individual_response
+                else
+                  results << result
+                end
+              end
+            end
+          end
+
+          unless block_given?
+            return results
           end
         end
 
