@@ -16,6 +16,8 @@ module DPN
         # @option options [DateTime String] :after (nil) Include only entries last modified
         #   after this date.
         # @option options [String] :admin_node (nil) Namespace of the admin_node of the bag.
+        # @option options [String] :member (nil) The UUID of the member that owns or is vested
+        #   in this bag.
         # @option options [String] :bag_type (nil) One of 'D', 'R', 'I', for data, rights, and
         #   interpretive, respectively.
         # @yield [Response] Optional block to process individual bag.
