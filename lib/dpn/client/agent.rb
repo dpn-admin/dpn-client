@@ -8,6 +8,7 @@ require "dpn/client/agent/connection"
 require "dpn/client/agent/node"
 require "dpn/client/agent/bag"
 require "dpn/client/agent/replicate"
+require "dpn/client/agent/member"
 
 module DPN
   module Client
@@ -18,6 +19,7 @@ module DPN
       include DPN::Client::Agent::Node
       include DPN::Client::Agent::Bag
       include DPN::Client::Agent::Replicate
+      include DPN::Client::Agent::Member
 
       def initialize(options = {})
         self.configure(options)
