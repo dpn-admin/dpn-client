@@ -52,6 +52,28 @@ describe DPN::Client::Agent::Member do
   end
 
 
+  describe "#member_bags" do
+    page_size = 1
+    let!(:query) { {} }
+    let!(:bodies) {[
+      {count: 3, next: "next", previous: nil, results: [{ a: "a1" }]},
+      {count: 3, next: "next", previous: "prev", results: [{ b: "b2" }]},
+      {count: 3, next: nil, previous: "prev", results: [{ c: "c3" }]}
+    ]}
+    let!(:stubs) {
+      [
+        stub_request(:get, dpn_url("/member/#{uuid}/bags/?page=1&page_size=#{page_size}"))
+          .to_return(body: bodies[0].to_json, status: 200, headers: headers),
+        stub_request(:get, dpn_url("/member/#{uuid}/bags/?page=2&page_size=#{page_size}"))
+          .to_return(body: bodies[1].to_json, status: 200, headers: headers),
+        stub_request(:get, dpn_url("/member/#{uuid}/bags/?page=3&page_size=#{page_size}"))
+          .to_return(body: bodies[2].to_json, status: 200, headers: headers)
+      ]
+    }
+    it_behaves_like "a paged endpoint", :member_bags, uuid, {page_size: page_size}
+  end
+
+
   describe "create_member" do
     body = { uuid: uuid, foo: "bar" }
     let!(:stub) {
