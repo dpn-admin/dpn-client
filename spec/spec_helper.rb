@@ -3,12 +3,11 @@
 # Licensed according to the terms of the Revised BSD License
 # See LICENSE.md for details.
 
-require 'bundler/setup'
-Bundler.require
-
 require "codeclimate-test-reporter"
 CodeClimate::TestReporter.start
 
+require 'bundler/setup'
+Bundler.require
 
 $LOAD_PATH.unshift File.expand_path('../../lib', __FILE__)
 require 'dpn/client'
