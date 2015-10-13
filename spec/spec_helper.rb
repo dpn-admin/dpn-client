@@ -4,8 +4,11 @@
 # See LICENSE.md for details.
 
 require 'bundler/setup'
-#Bundler.setup
 Bundler.require
+
+require "codeclimate-test-reporter"
+CodeClimate::TestReporter.start
+
 
 $LOAD_PATH.unshift File.expand_path('../../lib', __FILE__)
 require 'dpn/client'
