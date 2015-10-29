@@ -99,6 +99,7 @@ module DPN
           results = []
           paginate(url, query, (page_size || 25)) do |response|
             if response.success?
+              logger.info("Response has #{response[:results].size} results.")
               response[:results].each do |result|
                 if block_given?
                   individual_response = Response.from_data(response.status, result)
@@ -127,7 +128,7 @@ module DPN
               follow_redirect: true
           }
 
-          logger.info("Sending #{method.upcase}: #{fix_url(url)} #{options} ")
+          logger.info("Sending #{method.upcase}: #{File.join(base_url, fix_url(url))} #{options} ")
           raw_response = connection.request method, fix_url(url), options
           response = DPN::Client::Response.new(raw_response)
           logger.info("Received #{response.status}")

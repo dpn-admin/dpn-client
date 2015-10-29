@@ -58,8 +58,14 @@ module DPN
 
       def load_from_response!(httpclient_message_response)
         @cached_json = httpclient_message_response.body
-        @body = JSON.parse(@cached_json, symbolize_names: true)
         @status = httpclient_message_response.header.status_code
+
+        begin
+          @body = JSON.parse(@cached_json, symbolize_names: true)
+        rescue JSON::ParserError
+          @status = 999
+        end
+
         return self
       end
 
