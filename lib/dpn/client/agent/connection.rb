@@ -127,8 +127,10 @@ module DPN
               follow_redirect: true
           }
 
+          logger.info("Sending #{method.upcase}: #{fix_url(url)} #{options} ")
           raw_response = connection.request method, fix_url(url), options
           response = DPN::Client::Response.new(raw_response)
+          logger.info("Received #{response.status}")
           if block_given?
             yield response
           end
