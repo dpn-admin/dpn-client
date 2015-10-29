@@ -130,6 +130,7 @@ module DPN
 
           logger.info("Sending #{method.upcase}: #{File.join(base_url, fix_url(url))} #{options} ")
           raw_response = connection.request method, fix_url(url), options
+          logger.debug("Received #{raw_response.inspect}")
           response = DPN::Client::Response.new(raw_response)
           logger.info("Received #{response.status}")
           if block_given?
