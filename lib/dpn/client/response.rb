@@ -57,27 +57,20 @@ module DPN
       end
 
       def load_from_response!(httpclient_message_response)
-        raw_body = httpclient_message_response.body
+        @cached_json = httpclient_message_response.body
         @status = httpclient_message_response.header.status_code
+
         begin
-          @body = JSON.parse(raw_body, symbolize_names: true)
-          @cached_json = raw_body
+          @body = JSON.parse(@cached_json, symbolize_names: true)
         rescue JSON::ParserError
-          @body = {
-            status: @status,
-            parsed: nil,
-            raw: raw_body
-          }
-          @cached_json = @body.to_json
-          if success? # It wasn't actually successful
-            @status = 999
-          end
+          @status = 999
         end
+
         return self
       end
 
       def ==(other)
-        status == other.status && body == other.body
+        status == other.status# && body == other.body
       end
       alias_method :eql?, :==
 
