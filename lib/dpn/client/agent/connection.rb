@@ -93,26 +93,19 @@ module DPN
         # @param page_size [Fixnum] The number of results to request
         #   from each page.
         # @yield [Response] Mandatory block that takes each individual
-        #   result wrapped in a response object as a parameter.
-        # @return [Array<Response>] The results iff a block is not passed.
+        #   result wrapped in a response object as a parameter.  If a
+        #   request is unsuccessful, the failed response is yielded.
         def paginate_each(url, query, page_size, &block)
-          results = []
+          raise ArgumentError, "Must pass a block" unless block_given?
           paginate(url, query, (page_size || 25)) do |response|
             if response.success?
               logger.info("Response has #{response[:results].size} results.")
               response[:results].each do |result|
-                if block_given?
-                  individual_response = Response.from_data(response.status, result)
-                  yield individual_response
-                else
-                  results << result
-                end
+                  yield Response.from_data(response.status, result)
               end
+            else
+              yield response
             end
-          end
-
-          unless block_given?
-            return results
           end
         end
 

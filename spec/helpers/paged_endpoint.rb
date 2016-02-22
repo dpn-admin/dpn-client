@@ -12,13 +12,6 @@ shared_examples "a paged endpoint" do |method, *args|
     end
   end
 
-  it "returns the aggregated results" do
-    nodes = agent.public_send(method, *args)
-    expected_results = stubs.collect do |stub|
-      JSON.parse(stub.response.body, symbolize_names: true)[:results]
-    end
-    expect(nodes).to eql(expected_results.flatten)
-  end
 
   it "executes the block on each individual result" do
     expected_results = stubs.collect do |stub|
