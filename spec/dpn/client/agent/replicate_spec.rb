@@ -17,15 +17,15 @@ describe DPN::Client::Agent::Replicate do
     query_set_2 = {
       after: "2015-08-26T19:20:54Z",
       uuid: "some_uuid",
-      status: "some_status",
-      fixity_accept: true,
-      bag_valid: true,
+      store_requested: true,
+      stored: true,
+      cancelled: false,
       from_node: "some_from_node",
       to_node: "some_to_node",
       order_by: "created_at"
     }
     query_set_3 = {
-      bag_valid: false
+      cancel_reason: 'reject'
     }
 
     [query_set_1, query_set_2, query_set_3].each do |query_set|

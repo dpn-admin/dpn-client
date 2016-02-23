@@ -14,9 +14,10 @@ module DPN
         # @option options [DateTime,String] :after (nil) Include only entries last modified
         #   after this date.  Takes a properly formatted string, or a datetime.
         # @option options [String] uuid (nil) Filter by a specific bag's UUID.
-        # @option options [String] status (nil) Filter by status.
-        # @option options [Boolean] fixity_accept (nil) Filter by the value of fixity_accept.
-        # @option options [Boolean] bag_valid (nil) Filter by the value of bag_valid.
+        # @option options [Boolean] store_requested (nil) Filter by the value of store_requested.
+        # @option options [Boolean] stored (nil) Filter by the value of stored.
+        # @option options [Boolean] cancelled (nil) Filter by the value of cancelled.
+        # @option options [String] cancel_reason (nil) Filter by cancel_reason.
         # @option options [String] :from_node (nil) Namespace of the from_node of the bag.
         # @option options [String] :to_node (nil) Namespace of the to_node of the bag.
         # @option options [String] :order_by (nil) Comma-separated list of strings to order the
