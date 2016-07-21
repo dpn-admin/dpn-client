@@ -24,8 +24,6 @@ module DPN
         self.new.load_from_data!(status, body)
       end
 
-      attr_reader :status, :body
-
 
       def json
         @cached_json ||= @body.to_json
