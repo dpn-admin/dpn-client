@@ -16,8 +16,10 @@ shared_examples "a paged endpoint" do |method, *args|
   it "executes the block on each individual result" do
     expected_results = stubs.collect do |stub|
       status = stub.response.status[0]
-      body = JSON.parse(stub.response.body, symbolize_names: true)[:results]
-      DPN::Client::Response.from_data(status, body)
+      bodies = JSON.parse(stub.response.body, symbolize_names: true)[:results]
+      bodies.map do |body|
+        DPN::Client::Response.from_data(status, body)
+      end
     end
     expect{ |probe|
       agent.public_send(method, *args, &probe)

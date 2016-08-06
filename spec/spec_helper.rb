@@ -3,8 +3,10 @@
 # Licensed according to the terms of the Revised BSD License
 # See LICENSE.md for details.
 
+require "codeclimate-test-reporter"
+CodeClimate::TestReporter.start
+
 require 'bundler/setup'
-#Bundler.setup
 Bundler.require
 
 $LOAD_PATH.unshift File.expand_path('../../lib', __FILE__)

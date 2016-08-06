@@ -100,6 +100,7 @@ module DPN
           raise ArgumentError, "Block required" unless block_given?
           paginate(url, query, (page_size || 25)) do |response|
             if response.success?
+              logger.info("Response has #{response[:results].size} results.")
               response[:results].each do |result|
                 yield Response.from_data(response.status, result)
               end
@@ -107,7 +108,6 @@ module DPN
               yield response
             end
           end
-
         end
 
 
@@ -122,8 +122,11 @@ module DPN
               follow_redirect: true
           }
 
+          logger.info("Sending #{method.upcase}: #{File.join(base_url, fix_url(url))} #{options} ")
           raw_response = connection.request method, fix_url(url), options
+          logger.debug("Received #{raw_response.inspect}")
           response = DPN::Client::Response.new(raw_response)
+          logger.info("Received #{response.status}")
           if block_given?
             yield response
           end

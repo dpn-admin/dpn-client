@@ -10,18 +10,18 @@ module DPN
   module Client
     class Response
 
+      attr_reader :status, :body
 
-      def initialize(httpclient_message_response)
-        @cached_json = httpclient_message_response.body
-        @body = JSON.parse(@cached_json, symbolize_names: true)
-        @status = httpclient_message_response.header.status_code
+      def initialize(httpclient_response = nil)
+        if httpclient_response
+          load_from_response!(httpclient_response)
+        end
       end
 
 
       # Manually create a response.
       def self.from_data(status, body)
-        @body = body
-        @status = status
+        self.new.load_from_data!(status, body)
       end
 
       attr_reader :status, :body
@@ -49,20 +49,37 @@ module DPN
         @body[key.to_sym]
       end
 
-      # Removing the assignment operations pending a use case v2.0.0
 
-      # def []=(key, value)
-      #   @cached_json = nil
-      #   @body[key.to_sym] = value
-      # end
+      def load_from_data!(status, body)
+        @body = body
+        @status = status
+        return self
+      end
 
+      def load_from_response!(httpclient_message_response)
+        raw_body = httpclient_message_response.body
+        @status = httpclient_message_response.header.status_code
+        begin
+          @body = JSON.parse(raw_body, symbolize_names: true)
+          @cached_json = raw_body
+        rescue JSON::ParserError
+          @body = {
+            status: @status,
+            parsed: nil,
+            raw: raw_body
+          }
+          @cached_json = @body.to_json
+          if success? # It wasn't actually successful
+            @status = 999
+          end
+        end
+        return self
+      end
 
-      # def body=(value)
-      #   raise ArgumentError unless value.class == Hash
-      #   @cached_json = nil
-      #   @body = value
-      # end
-
+      def ==(other)
+        status == other.status && body == other.body
+      end
+      alias_method :eql?, :==
 
     end
   end

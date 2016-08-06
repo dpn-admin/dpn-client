@@ -3,13 +3,16 @@
 # Licensed according to the terms of the Revised BSD License
 # See LICENSE.md for details.
 
+require "logger"
+
 module DPN
   module Client
     class Agent
       module Configuration
         @@keys = [
             :api_root, :auth_token,
-            :per_page, :user_agent
+            :per_page, :user_agent,
+            :logger
         ]
 
         @@defaults = {
@@ -21,6 +24,7 @@ module DPN
 
         attr_accessor :api_root, :auth_token,
                       :per_page, :user_agent
+        attr_writer :logger
 
 
         # Apply the options hash to the configuration
@@ -50,7 +54,16 @@ module DPN
           File.join(@api_root, "api-v#{DPN::Client.api_version}")
         end
 
+        def logger
+          @logger ||= NullLogger.new
+        end
+
         protected
+
+        class NullLogger < Logger
+          def initialize(*args); end
+          def add(*args, &block); end
+        end
 
         def defaults
           @@defaults

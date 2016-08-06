@@ -2,6 +2,18 @@ language: ruby
 rvm:
 - 2.2.1
 before_install: gem install bundler -v 1.10.3
+script: bundle exec rspec
+addons:
+  code_climate:
+    repo_token: f22be735856cba5796a856b993f0d38a7655bf2eb75f0329701455327de301d2
 notifications:
   slack:
-    secure: TRWr6LiDI3mXdGdecKNtOIw7/znPNFzUbmf8hCy1SZg1/41QkMTmDFOKQJY2q8BexwuUEr1cBnYF/EJtwlqQ3bR6RytrchjmtgwlCBue90c1Rc/jt6W1FjPXPgWTQ1jki1fZcETLGvAeD2dzUxXTQfX3EJZ1rZ8Bi3TdbBKEM/h7PXHKbuA9Q+p+xzXDP2up31z/nIaMjcOdAGtE2zng9hhEGw7NzYFRNS8eZ8kMUhw/6ED+BeefDXNr8HMyzOyMrBhOQjqogB4KPFS1uaAE8K5QQt/IqNF1bDq3pvatAILC2RWsPQOTjWkKt2uQK2pj0Rbm0uh8rRi9rKCpIjd6BHKKx+lut4Ma5H2Sy80Iltksf/AHUlHI/6ZH4hE7LkQCdw3JmpTx5AHCI4OBo+JBRxSu3i4VfcFhxQrcuLDleib5NEha9KYVlRRM8y3+A9tP+5zrFEGi4DGHoW8X7xUCJFoXh7Jsec/PgndLkdyPdq/bFpG8LPXdbKgWuhNXSqiRxYO/8gRZYRfhcBw2qGgsCyravSZeQIAaClk7RfKwhBWqhrDAvW/tK05YaaLAC8Dt4WlGhx5Xa7TGfPzIsiZlLT8F27JXSIyQpg96I5RGzlmSoCmkcjwWYeum/6gzDDdogMrP4iTKoj18Oo/FyOPxo/aOeF/FfBBAT42jBVYl5g8=
+    secure: >
+      TRWr6LiDI3mXdGdecKNtOIw7/znPNFzUbmf8hCy1SZg1/41QkMTmDFOKQJY2q8BexwuUEr1cBnYF/EJtwlqQ3bR6Rytr
+      chjmtgwlCBue90c1Rc/jt6W1FjPXPgWTQ1jki1fZcETLGvAeD2dzUxXTQfX3EJZ1rZ8Bi3TdbBKEM/h7PXHKbuA9Q+p+
+      xzXDP2up31z/nIaMjcOdAGtE2zng9hhEGw7NzYFRNS8eZ8kMUhw/6ED+BeefDXNr8HMyzOyMrBhOQjqogB4KPFS1uaAE
+      8K5QQt/IqNF1bDq3pvatAILC2RWsPQOTjWkKt2uQK2pj0Rbm0uh8rRi9rKCpIjd6BHKKx+lut4Ma5H2Sy80Iltksf/AH
+      UlHI/6ZH4hE7LkQCdw3JmpTx5AHCI4OBo+JBRxSu3i4VfcFhxQrcuLDleib5NEha9KYVlRRM8y3+A9tP+5zrFEGi4DGH
+      oW8X7xUCJFoXh7Jsec/PgndLkdyPdq/bFpG8LPXdbKgWuhNXSqiRxYO/8gRZYRfhcBw2qGgsCyravSZeQIAaClk7RfKw
+      hBWqhrDAvW/tK05YaaLAC8Dt4WlGhx5Xa7TGfPzIsiZlLT8F27JXSIyQpg96I5RGzlmSoCmkcjwWYeum/6gzDDdogMrP
+      4iTKoj18Oo/FyOPxo/aOeF/FfBBAT42jBVYl5g8=
