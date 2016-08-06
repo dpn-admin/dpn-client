@@ -39,6 +39,31 @@ module DPN
         end
 
 
+        # Get a member's bags
+        # @param [String] uuid The specific member's uuid
+        # @param [Hash] options
+        # @option options [Fixnum] :page_size (25) Number of entries per page
+        # @option options [DateTime String] :before (nil) Include only entries last modified
+        #   before this date.
+        # @option options [DateTime String] :after (nil) Include only entries last modified
+        #   after this date.
+        # @option options [String] :admin_node (nil) Namespace of the admin_node of the bag.
+        # @option options [String] :bag_type (nil) One of 'D', 'R', 'I', for data, rights, and
+        #   interpretive, respectively.
+        # @yield [Response] Optional block to process individual bag.
+        # @return [Array<Hash>] Array of all bag data. Generated and returned
+        #   only if no block is passed.
+        def member_bags(uuid, options = {page_size: 25}, &block)
+          [:after, :before].each do |date_field|
+            if options[date_field].is_a?(DateTime)
+              options[date_field] = options[:date_field].new_offset(0).strftime(DPN::Client.time_format)
+            end
+          end
+
+          return paginate_each "/member/#{uuid}/bags/", options, options[:page_size], &block
+        end
+
+
         # Create a member
         # @param [Hash] member Body of the member
         # @yield [Response]
