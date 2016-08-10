@@ -39,16 +39,11 @@ describe DPN::Client::Agent::Member do
 
 
   describe "#member" do
-    context "without a uuid" do
-      it_behaves_like "members"
-    end
-    context "with a uuid" do
-      let!(:stub) {
-        stub_request(:get, dpn_url("/member/#{uuid}/"))
-          .to_return(body: {a: :b}.to_json, status: 200, headers: headers)
-      }
-      it_behaves_like "a single endpoint", :member, uuid
-    end
+    let!(:stub) {
+      stub_request(:get, dpn_url("/member/#{uuid}/"))
+        .to_return(body: {a: :b}.to_json, status: 200, headers: headers)
+    }
+    it_behaves_like "a single endpoint", :member, uuid
   end
 
 

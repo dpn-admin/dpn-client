@@ -11,26 +11,22 @@ module DPN
         # Get the replication request index
         # @param [Hash] options
         # @option options [Fixnum] :page_size (25) Number of entries per page
-        # @option options [DateTime,String] :after (nil) Include only entries last modified
-        #   after this date.  Takes a properly formatted string, or a datetime.
-        # @option options [String] uuid (nil) Filter by a specific bag's UUID.
+        # @option options [DateTime String] :before (nil) Include only entries last modified
+        #   before this date.
+        # @option options [DateTime String] :after (nil) Include only entries last modified
+        #   after this date.
+        # @option options [String] bag (nil) Filter by a specific bag's UUID.
+        # @option options [String] :to_node (nil) Namespace of the to_node of the bag.
+        # @option options [String] :from_node (nil) Namespace of the from_node of the bag.
         # @option options [Boolean] store_requested (nil) Filter by the value of store_requested.
         # @option options [Boolean] stored (nil) Filter by the value of stored.
         # @option options [Boolean] cancelled (nil) Filter by the value of cancelled.
         # @option options [String] cancel_reason (nil) Filter by cancel_reason.
-        # @option options [String] :from_node (nil) Namespace of the from_node of the bag.
-        # @option options [String] :to_node (nil) Namespace of the to_node of the bag.
-        # @option options [String] :order_by (nil) Comma-separated list of strings to order the
-        #   result by.  Accepted values are 'created_at' and 'updated_at'
         # @yield [Response] Optional block to process each individual replication.
         # @return [Array<Hash>] Array of all replication data. Generated and returned
         #   only if no block is passed.
         def replications(options = {page_size: 25}, &block)
-          if options[:after].is_a?(DateTime)
-            options[:after] = options[:after].new_offset(0).strftime(DPN::Client.time_format)
-          end
-
-          return paginate_each "/replicate/", options, options[:page_size], &block
+          paginate_each "/replicate/", options, options[:page_size], &block
         end
 
 
@@ -43,12 +39,14 @@ module DPN
         #   Alias for #replications
         #   @return [Array<Hash>]
         #   @see #replications
-        def replicate(replication_id = nil, options = {page_size: 25}, &block)
-          if replication_id
-            get "/replicate/#{replication_id}/", nil, &block
-          else
-            replications(options, &block)
-          end
+        def replicate(replication_id, &block)
+          get "/replicate/#{replication_id}/", nil, &block
+        end
+
+
+        # Alias of #replicate
+        def replication(replication_id, &block)
+          replicate replication_id, &block
         end
 
 
@@ -57,7 +55,7 @@ module DPN
         # @yield [Response]
         # @return [Response]
         def create_replication(request, &block)
-          post "/replicate", request, &block
+          post "/replicate/", request, &block
         end
 
 
@@ -67,15 +65,6 @@ module DPN
         # @return [Response]
         def update_replication(request, &block)
           put "/replicate/#{request[:replication_id]}/", request, &block
-        end
-
-
-        # Delete a replication request
-        # @param [String] replication_id The replication_id of the replication request
-        # @yield [Response]
-        # @return [Response]
-        def delete_replication(replication_id, &block)
-          delete "/replicate/#{replication_id}/", &block
         end
 
       end
