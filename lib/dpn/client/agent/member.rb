@@ -17,9 +17,7 @@ module DPN
         #   before this date.
         # @option options [DateTime String] :after (nil) Include only entries last modified
         #   after this date.
-        # @yield [Response] Optional block to process each individual member.
-        # @return [Array<Hash>] Array of all member data. Generated and returned
-        #   only if no block is passed.
+        # @yield [Response] Block to process each individual member.
         def members(options = {page_size: 25}, &block)
           paginate_each "/member/", options, options[:page_size], &block
         end

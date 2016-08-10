@@ -22,9 +22,7 @@ module DPN
         # @option options [Boolean] finished (nil) Filter by the value of finished.
         # @option options [Boolean] cancelled (nil) Filter by the value of cancelled.
         # @option options [String] cancel_reason (nil) Filter by cancel_reason.
-        # @yield [Response] Optional block to process each individual result.
-        # @return [Array<Hash>] Array of all restore data. Generated and returned
-        #   only if no block is passed.
+        # @yield [Response] Block to process each individual result.
         def restores(options = {page_size: 25}, &block)
           paginate_each "/restore/", options, options[:page_size], &block
         end

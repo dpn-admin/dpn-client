@@ -22,9 +22,7 @@ module DPN
         # @option options [Boolean] stored (nil) Filter by the value of stored.
         # @option options [Boolean] cancelled (nil) Filter by the value of cancelled.
         # @option options [String] cancel_reason (nil) Filter by cancel_reason.
-        # @yield [Response] Optional block to process each individual replication.
-        # @return [Array<Hash>] Array of all replication data. Generated and returned
-        #   only if no block is passed.
+        # @yield [Response] Block to process each individual replication.
         def replications(options = {page_size: 25}, &block)
           paginate_each "/replicate/", options, options[:page_size], &block
         end
