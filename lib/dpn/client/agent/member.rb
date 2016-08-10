@@ -27,7 +27,7 @@ module DPN
         # @param [String] uuid UUIDv4 of the member.
         # @yield [Response] Optional block to process the response.
         # @return [Response]
-        def member(uuid = nil, &block)
+        def member(uuid, &block)
           get "/member/#{uuid}/", nil, &block
         end
 
