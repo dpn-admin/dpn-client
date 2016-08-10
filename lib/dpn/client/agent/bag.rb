@@ -15,40 +15,28 @@ module DPN
         #   before this date.
         # @option options [DateTime String] :after (nil) Include only entries last modified
         #   after this date.
-        # @option options [String] :admin_node (nil) Namespace of the admin_node of the bag.
-        # @option options [String] :member (nil) The UUID of the member that owns or is vested
-        #   in this bag.
         # @option options [String] :bag_type (nil) One of 'D', 'R', 'I', for data, rights, and
         #   interpretive, respectively.
-        # @yield [Response] Optional block to process individual bag.
-        # @return [Array<Hash>] Array of all bag data. Generated and returned
-        #   only if no block is passed.
+        # @option options [String] :admin_node (nil) Namespace of the admin_node of the bag.
+        # @option options [String] :ingest_node (nil) Namespace of the ingest_node of the bag.
+        # @option options [String] :member (nil) The UUID of the member that owns or is vested
+        #   in this bag.
+        # @option options [String] :first_version_uuid (nil) UUIDv4 of the bag's first version.
+        # @option options [Array<String>] :replicated_by ([]) Namespaces of replicating nodes; the
+        #  result is the UNION of these filters.
+        # @yield [Response] Block to process each individual bag.
+        #   @see Connection#paginate
         def bags(options = {page_size: 25}, &block)
-          [:after, :before].each do |date_field|
-            if options[date_field].is_a?(DateTime)
-              options[date_field] = options[:date_field].new_offset(0).strftime(DPN::Client.time_format)
-            end
-          end
-
-          return paginate_each "/bag/", options, options[:page_size], &block
+          paginate_each "/bag/", options, options[:page_size], &block
         end
 
 
-        # @overload bag(uuid, &block)
-        #   Get a specific bag
-        #   @param [String] uuid UUID of the bag.
-        #   @yield [Response]
-        #   @return [Response]
-        # @overload bag(options)
-        #   Alias for #bags
-        #   @return [Array<Hash>]
-        #   @see #bags
-        def bag(uuid = nil, options = {page_size: 25}, &block)
-          if uuid
-            get "/bag/#{uuid}/", nil, &block
-          else
-            bags(options, &block)
-          end
+        # Get a specific bag
+        # @param [String] uuid UUID of the bag.
+        # @yield [Response]
+        # @return [Response]
+        def bag(uuid, &block)
+          get "/bag/#{uuid}/", nil, &block
         end
 
 
@@ -57,7 +45,7 @@ module DPN
         # @yield [Response]
         # @return [Response]
         def create_bag(bag, &block)
-          post "/bag", bag, &block
+          post "/bag/", bag, &block
         end
 
 

@@ -57,7 +57,7 @@ module DPN
         end
 
 
-        # Make a one or more GET requests, fetching the next
+        # Make one or more GET requests, fetching the next
         # page of results one page at a time, so long as the
         # response indicates there is another page.
         # @param url [String] The path, relative to base_url
@@ -72,6 +72,12 @@ module DPN
 
           query ||= {}
           query = query.merge({ :page_size => page_size, :page => 1})
+
+          [:after, :before].each do |date_field|
+            if query[date_field].is_a?(DateTime)
+              query[date_field] = query[:date_field].new_offset(0).strftime(DPN::Client.time_format)
+            end
+          end
 
           response = get(url, query) # pass an empty block so we can call the block manually on :results
           yield response

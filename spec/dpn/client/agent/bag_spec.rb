@@ -57,16 +57,11 @@ describe DPN::Client::Agent::Bag do
 
 
   describe "#bag" do
-    context "without a uuid" do
-      it_behaves_like "bags"
-    end
-    context "with a uuid" do
-      let!(:stub) {
-        stub_request(:get, dpn_url("/bag/#{uuid}/"))
-          .to_return(body: {a: :b}.to_json, status: 200, headers: headers)
-      }
-      it_behaves_like "a single endpoint", :bag, uuid
-    end
+    let!(:stub) {
+      stub_request(:get, dpn_url("/bag/#{uuid}/"))
+        .to_return(body: {a: :b}.to_json, status: 200, headers: headers)
+    }
+    it_behaves_like "a single endpoint", :bag, uuid
   end
 
 

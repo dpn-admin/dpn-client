@@ -5,13 +5,14 @@
 
 require "spec_helper"
 
-describe DPN::Client::Agent::Replicate do
+describe DPN::Client::Agent::Restore do
   before(:all) { WebMock.enable! }
   let(:agent) { DPN::Client::Agent.new(api_root: test_api_root, auth_token: "some_auth_token") }
   headers =  {content_type: "application/json"}
-  repl_id = "somereplid"
+  restore_id = "somerestoreid"
+  
 
-  shared_examples "replications" do
+  describe "#restores" do
     page_size = 1
     query_set_1 = {}
     query_set_2 = {
@@ -38,63 +39,49 @@ describe DPN::Client::Agent::Replicate do
         ]}
         let!(:stubs) {
           [
-            stub_request(:get, dpn_url("/replicate/")).with(query: query.merge(page: 1))
+            stub_request(:get, dpn_url("/restore/")).with(query: query.merge(page: 1))
               .to_return(body: bodies[0].to_json, status: 200, headers: headers),
-            stub_request(:get, dpn_url("/replicate/")).with(query: query.merge(page: 2))
+            stub_request(:get, dpn_url("/restore/")).with(query: query.merge(page: 2))
               .to_return(body: bodies[1].to_json, status: 200, headers: headers),
-            stub_request(:get, dpn_url("/replicate/")).with(query: query.merge(page: 3))
+            stub_request(:get, dpn_url("/restore/")).with(query: query.merge(page: 3))
               .to_return(body: bodies[2].to_json, status: 200, headers: headers)
           ]
         }
 
-        it_behaves_like "a paged endpoint", :replications, query.merge(page: 1)
-      end # with query_set of size...
-    end # loop on query sets
-  end # shared examples replications
-
-
-
-  describe "#replications" do
-    it_behaves_like "replications"
+        it_behaves_like "a paged endpoint", :restores, query.merge(page: 1)
+      end
+    end
   end
 
 
-  describe "#replicate" do
+  describe "#restore" do
     let!(:stub) {
-      stub_request(:get, dpn_url("/replicate/#{repl_id}/"))
+      stub_request(:get, dpn_url("/restore/#{restore_id}/"))
         .to_return(body: {a: :b}.to_json, status: 200, headers: headers)
     }
-    it_behaves_like "a single endpoint", :replicate, repl_id
-  end
-
-  describe "#replication" do
-    let!(:stub) {
-      stub_request(:get, dpn_url("/replicate/#{repl_id}/"))
-        .to_return(body: {a: :b}.to_json, status: 200, headers: headers)
-    }
-    it_behaves_like "a single endpoint", :replication, repl_id
+    it_behaves_like "a single endpoint", :restore, restore_id
   end
 
 
-  describe "create_replication" do
-    body = { replication_id: repl_id, foo: "bar" }
+  describe "create_restore" do
+    body = { restore_id: restore_id, foo: "bar" }
     let!(:stub) {
-      stub_request(:post, dpn_url("/replicate/"))
+      stub_request(:post, dpn_url("/restore/"))
         .to_return(body: body.to_json, status: 201, headers: headers)
     }
 
-    it_behaves_like "a single endpoint", :create_replication, body
+    it_behaves_like "a single endpoint", :create_restore, body
   end
 
 
-  describe "update_replication" do
-    body = { replication_id: repl_id, foo: "bar" }
+  describe "update_restore" do
+    body = { restore_id: restore_id, foo: "bar" }
     let!(:stub) {
-      stub_request(:put, dpn_url("/replicate/#{repl_id}/"))
+      stub_request(:put, dpn_url("/restore/#{restore_id}/"))
         .to_return(body: body.to_json, status: 200, headers: headers)
     }
 
-    it_behaves_like "a single endpoint", :update_replication, body
+    it_behaves_like "a single endpoint", :update_restore, body
   end
 
 

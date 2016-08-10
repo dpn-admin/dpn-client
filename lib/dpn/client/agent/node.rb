@@ -10,41 +10,12 @@ module DPN
       # Operations on the node resource.
       module Node
 
-        # Get the nodes index
-        # @param [Hash] options
-        # @option options [Fixnum] :page_size (25) Number of nodes per page
-        # @yield [Response] Optional block to process each individual node.
-        # @return [Array<Hash>] Array of all node data. Generated and returned
-        #   only if no block is passed.
-        def nodes(options = {page_size: 25}, &block)
-          return paginate_each "/node/", options, options[:page_size], &block
-        end
-
-
-        # @overload node(namespace, &block)
-        #   Get a specific node
-        #   @param [String] namespace Namespace of the node.
-        #   @yield [Response] Optional block to process the response.
-        #   @return [Response]
-        # @overload node(options, &block)
-        #   Alias for #nodes
-        #   @return [Array<Hash>]
-        #   @see #nodes
-        def node(namespace = nil, options = {page_size: 25}, &block)
-          if namespace
-            get "/node/#{namespace}/", nil, &block
-          else
-            nodes(options, &block)
-          end
-        end
-
-
-        # Create a node
-        # @param [Hash] node Body of the node
-        # @yield [Response]
+        # Get a specific node
+        # @param [String] namespace Namespace of the node.
+        # @yield [Response] Optional block to process the response.
         # @return [Response]
-        def create_node(node, &block)
-          post "/node/", node, &block
+        def node(namespace, &block)
+          get "/node/#{namespace}/", nil, &block
         end
 
 
@@ -56,14 +27,6 @@ module DPN
           put "/node/#{node[:namespace]}/", node, &block
         end
 
-
-        # Delete a node
-        # @param [String] namespace Namespace of the node.
-        # @yield [Response]
-        # @return [Response]
-        def delete_node(namespace, &block)
-          delete "/node/#{namespace}/", &block
-        end
 
       end
     end

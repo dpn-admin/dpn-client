@@ -13,29 +13,22 @@ module DPN
         # Get the members index
         # @param [Hash] options
         # @option options [Fixnum] :page_size (25) Number of members per page
-        # @yield [Response] Optional block to process each individual member.
-        # @return [Array<Hash>] Array of all member data. Generated and returned
-        #   only if no block is passed.
+        # @option options [DateTime String] :before (nil) Include only entries last modified
+        #   before this date.
+        # @option options [DateTime String] :after (nil) Include only entries last modified
+        #   after this date.
+        # @yield [Response] Block to process each individual member.
         def members(options = {page_size: 25}, &block)
-          return paginate_each "/member/", options, options[:page_size], &block
+          paginate_each "/member/", options, options[:page_size], &block
         end
 
 
-        # @overload member(uuid, &block)
-        #   Get a specific member
-        #   @param [String] uuid UUIDv4 of the member.
-        #   @yield [Response] Optional block to process the response.
-        #   @return [Response]
-        # @overload member(options, &block)
-        #   Alias for #members
-        #   @return [Array<Hash>]
-        #   @see #members
-        def member(uuid = nil, options = {page_size: 25}, &block)
-          if uuid
-            get "/member/#{fix_uuid(uuid)}/", nil, &block
-          else
-            members(options, &block)
-          end
+        # Get a specific member
+        # @param [String] uuid UUIDv4 of the member.
+        # @yield [Response] Optional block to process the response.
+        # @return [Response]
+        def member(uuid = nil, &block)
+          get "/member/#{uuid}/", nil, &block
         end
 
 
@@ -54,13 +47,7 @@ module DPN
         # @return [Array<Hash>] Array of all bag data. Generated and returned
         #   only if no block is passed.
         def member_bags(uuid, options = {page_size: 25}, &block)
-          [:after, :before].each do |date_field|
-            if options[date_field].is_a?(DateTime)
-              options[date_field] = options[:date_field].new_offset(0).strftime(DPN::Client.time_format)
-            end
-          end
-
-          return paginate_each "/member/#{uuid}/bags/", options, options[:page_size], &block
+          paginate_each "/member/#{uuid}/bags/", options, options[:page_size], &block
         end
 
 
@@ -78,7 +65,7 @@ module DPN
         # @yield [Response]
         # @return [Response]
         def update_member(member, &block)
-          put "/member/#{fix_uuid(member[:uuid])}/", member, &block
+          put "/member/#{member[:uuid]}/", member, &block
         end
 
 
@@ -87,24 +74,9 @@ module DPN
         # @yield [Response]
         # @return [Response]
         def delete_member(uuid, &block)
-          delete "/member/#{fix_uuid(uuid)}/", &block
+          delete "/member/#{uuid}/", &block
         end
 
-
-        private
-        # Add dashes to a uuid if they are missing
-        def fix_uuid(uuid)
-          if uuid && uuid.size == 32
-            unless uuid.include?("-")
-              uuid.insert(8, "-")   # 9th, 14th, 19th and 24th
-              uuid.insert(13, "-")
-              uuid.insert(18, "-")
-              uuid.insert(23, "-")
-            end
-          end
-          uuid.downcase
-        end
-        
 
       end
 
