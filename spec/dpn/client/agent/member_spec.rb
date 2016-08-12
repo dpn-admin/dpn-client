@@ -9,7 +9,7 @@ describe DPN::Client::Agent::Member do
   before(:all) { WebMock.enable! }
   let(:agent) { DPN::Client::Agent.new(api_root: test_api_root, auth_token: "some_auth_token") }
   headers =  {content_type: "application/json"}
-  uuid = SecureRandom.uuid
+  member_id = SecureRandom.uuid
 
   shared_examples "members" do
     page_size = 1
@@ -40,10 +40,10 @@ describe DPN::Client::Agent::Member do
 
   describe "#member" do
     let!(:stub) {
-      stub_request(:get, dpn_url("/member/#{uuid}/"))
+      stub_request(:get, dpn_url("/member/#{member_id}/"))
         .to_return(body: {a: :b}.to_json, status: 200, headers: headers)
     }
-    it_behaves_like "a single endpoint", :member, uuid
+    it_behaves_like "a single endpoint", :member, member_id
   end
 
 
@@ -57,20 +57,20 @@ describe DPN::Client::Agent::Member do
     ]}
     let!(:stubs) {
       [
-        stub_request(:get, dpn_url("/member/#{uuid}/bags/?page=1&page_size=#{page_size}"))
+        stub_request(:get, dpn_url("/member/#{member_id}/bags/?page=1&page_size=#{page_size}"))
           .to_return(body: bodies[0].to_json, status: 200, headers: headers),
-        stub_request(:get, dpn_url("/member/#{uuid}/bags/?page=2&page_size=#{page_size}"))
+        stub_request(:get, dpn_url("/member/#{member_id}/bags/?page=2&page_size=#{page_size}"))
           .to_return(body: bodies[1].to_json, status: 200, headers: headers),
-        stub_request(:get, dpn_url("/member/#{uuid}/bags/?page=3&page_size=#{page_size}"))
+        stub_request(:get, dpn_url("/member/#{member_id}/bags/?page=3&page_size=#{page_size}"))
           .to_return(body: bodies[2].to_json, status: 200, headers: headers)
       ]
     }
-    it_behaves_like "a paged endpoint", :member_bags, uuid, {page_size: page_size}
+    it_behaves_like "a paged endpoint", :member_bags, member_id, {page_size: page_size}
   end
 
 
   describe "create_member" do
-    body = { uuid: uuid, foo: "bar" }
+    body = { member_id: member_id, foo: "bar" }
     let!(:stub) {
       stub_request(:post, dpn_url("/member/"))
         .to_return(body: body.to_json, status: 201, headers: headers)
@@ -81,9 +81,9 @@ describe DPN::Client::Agent::Member do
 
 
   describe "update_member" do
-    body = { uuid: uuid, foo: "bar" }
+    body = { member_id: member_id, foo: "bar" }
     let!(:stub) {
-      stub_request(:put, dpn_url("/member/#{uuid}/"))
+      stub_request(:put, dpn_url("/member/#{member_id}/"))
         .to_return(body: body.to_json, status: 200, headers: headers)
     }
 
@@ -93,11 +93,11 @@ describe DPN::Client::Agent::Member do
 
   describe "delete_member" do
     let!(:stub) {
-      stub_request(:delete, dpn_url("/member/#{uuid}/"))
+      stub_request(:delete, dpn_url("/member/#{member_id}/"))
         .to_return(body: {}.to_json, status: 200, headers: headers)
     }
 
-    it_behaves_like "a single endpoint", :delete_member, uuid
+    it_behaves_like "a single endpoint", :delete_member, member_id
   end
 
 
