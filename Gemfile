@@ -5,7 +5,7 @@
 
 source 'https://rubygems.org'
 
-gem 'dpn_cops', git: 'https://github.com/dpn-admin/dpn_cops.git', group: [:development, :test]
+gem 'dpn_cops', group: [:development, :test]
 
 # Specify your gem's dependencies in dpn-client.gemspec
 gemspec
