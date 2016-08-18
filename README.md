@@ -9,8 +9,7 @@
 Add this line to your application's Gemfile:
 
 ```ruby
-gem 'dpn-client', :git => 'https://github.com/dpn-admin/dpn-client.git'
-
+gem 'dpn-client'
 ```
 
 And then execute:
