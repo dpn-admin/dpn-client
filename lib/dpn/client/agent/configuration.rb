@@ -26,6 +26,13 @@ module DPN
                       :per_page, :user_agent
         attr_writer :logger
 
+        def api_ver
+          @api_ver ||= "api-v#{DPN::Client.api_version}"
+        end
+
+        def base_url
+          @api_root
+        end
 
         # Apply the options hash to the configuration
         def configure(options_hash = {})
@@ -50,9 +57,6 @@ module DPN
         end
         alias_method  :setup, :reset
 
-        def base_url
-          File.join(@api_root, "api-v#{DPN::Client.api_version}")
-        end
 
         def logger
           @logger ||= NullLogger.new
