@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    dpn-client (2.0.0)
+    dpn-client (2.0.1)
       httpclient (~> 2.8.0)
 
 GEM
