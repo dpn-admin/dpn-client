@@ -5,17 +5,14 @@
 
 require "spec_helper"
 
-API_ROOT = "https://api.test.dpn-client.org/"
-url = File.join API_ROOT, "/"
-
 shared_examples "basic http" do |operation, *args|
   let(:body) {  {tag: "content" } }
   before(:each) do
-    @request = stub_request(operation, url)
+    @request = stub_request(operation, stub_url)
                    .to_return(body: body.to_json, status: 200, headers: {content_type: "application/json"})
   end
 
-  it "requests #{url}" do
+  it "requests a url" do
     connection.public_send(operation, url, *args)
     expect(@request).to have_been_requested
   end
@@ -33,11 +30,9 @@ shared_examples "basic http" do |operation, *args|
   end
 
   it "returns errors" do
-    error_url = File.join url, "error", "/"
-    stub_request(operation, error_url).to_return(body: body.to_json, status: 400)
-
+    error_url = File.join(url, "error")
+    stub_request(operation, dpn_url(error_url)).to_return(body: body.to_json, status: 400)
     response = connection.public_send(operation, error_url, *args)
-
     expect(response).to be_a DPN::Client::Response
     expect(response.status).to eql(400)
   end
@@ -69,13 +64,15 @@ shared_examples "pagination" do
       counter += 1
     end
   end
-
 end
 
 
 describe DPN::Client::Agent::Connection do
+  let(:connection) { DPN::Client::Agent.new(api_root: test_api_root, auth_token: "some_auth_token") }
+  let(:url) { 'bag' }
+  let(:stub_url) { dpn_url(url) }
+
   before(:all) { WebMock.enable! }
-  let(:connection) { DPN::Client::Agent.new(api_root: API_ROOT, auth_token: "some_auth_token") }
 
   it "isn't allowed unstubbed requests" do
     expect {
@@ -88,7 +85,7 @@ describe DPN::Client::Agent::Connection do
 
     it "handles query parameters" do
       real_query = "a=1,2,3&b=foo"
-      stub = stub_request(:get, url).with(query: real_query)
+      stub = stub_request(:get, stub_url).with(query: real_query)
         .to_return(body: "{}", status: 200, headers: {content_type: "application/json"})
 
       connection.get(url, { a: [1,2,3], b: "foo" } )
@@ -135,7 +132,7 @@ describe DPN::Client::Agent::Connection do
           }
           let!(:headers) { {content_type: "application/json"} }
           let!(:stubs) {
-            [] << stub_request(:get, url).with(query: query.merge({page: 1, page_size: 25}))
+            [] << stub_request(:get, stub_url).with(query: query.merge({page: 1, page_size: 25}))
                     .to_return(body: bodies[0], status: 200, headers: headers)
           }
 
@@ -154,11 +151,11 @@ describe DPN::Client::Agent::Connection do
           let!(:headers) { {content_type: "application/json"} }
           let!(:stubs) {
             [
-              stub_request(:get, url).with(query: query.merge({page: 1, page_size: 1}))
+              stub_request(:get, stub_url).with(query: query.merge({page: 1, page_size: 1}))
                 .to_return(body: bodies[0], status: 200, headers: headers),
-              stub_request(:get, url).with(query: query.merge({page: 2, page_size: 1}))
+              stub_request(:get, stub_url).with(query: query.merge({page: 2, page_size: 1}))
                 .to_return(body: bodies[1], status: 200, headers: headers),
-              stub_request(:get, url).with(query: query.merge({page: 3, page_size: 1}))
+              stub_request(:get, stub_url).with(query: query.merge({page: 3, page_size: 1}))
                 .to_return(body: bodies[2], status: 200, headers: headers)
             ]
           }
@@ -181,7 +178,7 @@ describe DPN::Client::Agent::Connection do
           }
           let!(:headers) { {content_type: "application/json"} }
           let!(:stubs) {
-            [] << stub_request(:get, url).with(query: query.merge({page: 1, page_size: 25}))
+            [] << stub_request(:get, stub_url).with(query: query.merge({page: 1, page_size: 25}))
                     .to_return(body: bodies[0], status: 400, headers: headers)
           }
 
@@ -199,11 +196,11 @@ describe DPN::Client::Agent::Connection do
           let!(:headers) { {content_type: "application/json"} }
           let!(:stubs) {
             [
-              stub_request(:get, url).with(query: query.merge({page: 1, page_size: 1}))
+              stub_request(:get, stub_url).with(query: query.merge({page: 1, page_size: 1}))
                 .to_return(body: bodies[0], status: 200, headers: headers),
-              stub_request(:get, url).with(query: query.merge({page: 2, page_size: 1}))
+              stub_request(:get, stub_url).with(query: query.merge({page: 2, page_size: 1}))
                 .to_return(body: bodies[1], status: 200, headers: headers),
-              stub_request(:get, url).with(query: query.merge({page: 3, page_size: 1}))
+              stub_request(:get, stub_url).with(query: query.merge({page: 3, page_size: 1}))
                 .to_return(body: bodies[2], status: 400, headers: headers)
             ]
           }
@@ -222,11 +219,11 @@ describe DPN::Client::Agent::Connection do
           let!(:headers) { {content_type: "application/json"} }
           let!(:stubs) {
             [
-              stub_request(:get, url).with(query: query.merge({page: 1, page_size: 25}))
+              stub_request(:get, stub_url).with(query: query.merge({page: 1, page_size: 25}))
                 .to_return(body: bodies[0], status: 200, headers: headers),
-              stub_request(:get, url).with(query: query.merge({page: 2, page_size: 1}))
+              stub_request(:get, stub_url).with(query: query.merge({page: 2, page_size: 1}))
                 .to_return(body: bodies[1], status: 200, headers: headers),
-              stub_request(:get, url).with(query: query.merge({page: 3, page_size: 1}))
+              stub_request(:get, stub_url).with(query: query.merge({page: 3, page_size: 1}))
                 .to_return(body: bodies[2], status: 400, headers: headers)
             ]
           }
