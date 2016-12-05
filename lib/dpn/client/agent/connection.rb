@@ -119,40 +119,6 @@ module DPN
 
         protected
 
-        def request(method, url, query, body, &block)
-          url, extra_query = parse_url(url)
-          query ||= {}
-          options = {
-              query: stringify_nested_arrays!(query.merge(extra_query)),
-              body: body.to_json,
-              follow_redirect: true
-          }
-
-          logger.info("Sending #{method.upcase}: #{File.join(base_url, fix_url(url))} #{options} ")
-          raw_response = connection.request method, fix_url(url), options
-          logger.debug("Received #{raw_response.inspect}")
-          response = DPN::Client::Response.new(raw_response)
-          logger.info("Received #{response.status}")
-          if block_given?
-            yield response
-          end
-
-          return response
-        end
-
-
-        def parse_url(raw_url)
-          url, query = raw_url.split("?", 2)
-          url = File.join url, ""
-          if query
-            query = URI::decode_www_form(query).to_h
-          else
-            query = {}
-          end
-          return url, query
-        end
-
-
         def connection
           @connection ||= ::HTTPClient.new({
               agent_name: user_agent,
@@ -165,11 +131,39 @@ module DPN
           })
         end
 
-
-        def fix_url(url)
-          File.join url, "/"
+        def request(method, url, query, body, &block)
+          url, extra_query = parse_url(url)
+          query ||= {}
+          options = {
+              query: stringify_nested_arrays!(query.merge(extra_query)),
+              body: body.to_json,
+              follow_redirect: true
+          }
+          logger.info("Sending #{method.upcase}: #{File.join(base_url, url)} #{options} ")
+          raw_response = connection.request method, url, options
+          logger.debug("Received #{raw_response.inspect}")
+          response = DPN::Client::Response.new(raw_response)
+          logger.info("Received #{response.status}")
+          if block_given?
+            yield response
+          end
+          response
         end
 
+        def parse_url(raw_url)
+          url, query = raw_url.split("?", 2)
+          query = if query
+                    URI.decode_www_form(query).to_h
+                  else
+                    {}
+                  end
+          return fix_url(url), query
+        end
+
+        def fix_url(url)
+          url = File.join(api_ver, url) unless url.include?(api_ver)
+          File.join "/", url, "/"
+        end
 
         # Convert array values to csv
         # Only goes one level deep.

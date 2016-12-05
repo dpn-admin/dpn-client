@@ -10,7 +10,7 @@ describe DPN::Client::Agent::Restore do
   let(:agent) { DPN::Client::Agent.new(api_root: test_api_root, auth_token: "some_auth_token") }
   headers =  {content_type: "application/json"}
   restore_id = "somerestoreid"
-  
+
 
   describe "#restores" do
     page_size = 1
