@@ -153,7 +153,7 @@ module DPN
         def parse_url(raw_url)
           url, query = raw_url.split("?", 2)
           query = if query
-                    URI::decode_www_form(query).to_h
+                    URI.decode_www_form(query).to_h
                   else
                     {}
                   end

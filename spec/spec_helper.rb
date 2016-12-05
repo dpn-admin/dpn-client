@@ -23,7 +23,7 @@ def test_api_root
 end
 
 def test_api_ver
-  @test_api_ver ||= "api-v#{DPN::Client::api_version}"
+  @test_api_ver ||= "api-v#{DPN::Client.api_version}"
 end
 
 def test_api_url
