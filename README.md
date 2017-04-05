@@ -1,4 +1,5 @@
 # DPN::Client
+![dpn_client](https://cloud.githubusercontent.com/assets/26936378/24722094/6989a950-1a10-11e7-9512-fdd20c8f1123.jpg)
 
 [![Build Status](https://travis-ci.org/dpn-admin/dpn-client.svg?branch=master)](https://travis-ci.org/dpn-admin/dpn-client)
 [![Code Climate](https://codeclimate.com/github/dpn-admin/dpn-client/badges/gpa.svg)](https://codeclimate.com/github/dpn-admin/dpn-client)
