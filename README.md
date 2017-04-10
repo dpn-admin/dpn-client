@@ -1,4 +1,5 @@
 # DPN::Client
+![dpn_client](dpn_client_500.jpg)
 
 [![Build Status](https://travis-ci.org/dpn-admin/dpn-client.svg?branch=master)](https://travis-ci.org/dpn-admin/dpn-client)
 [![Code Climate](https://codeclimate.com/github/dpn-admin/dpn-client/badges/gpa.svg)](https://codeclimate.com/github/dpn-admin/dpn-client)
@@ -43,13 +44,13 @@ but you can treat this object as just a hash, if you want.  Index operations
 return an array of hashes.
 
 You can pass a block to any operation.  For single-endpoints, the response will
-be passed to the block.  For indexes, each individual result will be passed 
+be passed to the block.  For indexes, each individual result will be passed
 successively to the block. Using blocks is recommended.
 
 ## License
 
-Copyright (c) 2015 The Regents of the University of Michigan.  
-All Rights Reserved.  
-Licensed according to the terms of the Revised BSD License.  
-See LICENSE.md for details.  
+Copyright (c) 2015 The Regents of the University of Michigan.
+All Rights Reserved.
+Licensed according to the terms of the Revised BSD License.
+See LICENSE.md for details.
 
